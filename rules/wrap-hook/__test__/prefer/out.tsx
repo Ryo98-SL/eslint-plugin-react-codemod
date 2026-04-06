@@ -1,0 +1,30 @@
+import { Modal, type ModalInfoType } from "helpers/test-helper/comps/modal";
+import { useCallback, useState } from "react";
+import { useMemoProxy } from "react-dummy";
+
+
+function PreferTest() {
+
+    const [size, setSize] = useState(10)
+
+    const innerGenInfo = useCallback((size: number) => {
+        return {
+            size: size + 20
+        }
+    }, []);
+
+    
+    const modalInfo = useMemoProxy<ModalInfoType | undefined>(innerGenInfo(size), [innerGenInfo, size]);
+    
+    const handleModalClick = useCallback<(Parameters<typeof Modal>[0]["onClick"]) & Function>(() => console.log(size), [size]);
+    
+    const handleModalClose = useCallback<(Parameters<typeof Modal>[0]["onClose"]) & Function>(() => console.log(size), [size]);
+    return <>
+        
+        <Modal 
+            onClick={handleModalClick} 
+            onClose={handleModalClose}
+            info={modalInfo}
+        />
+    </>
+}

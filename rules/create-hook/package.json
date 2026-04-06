@@ -1,0 +1,20 @@
+{
+  "name": "create-hook",
+  "private": true,
+  "scripts": {
+    "test": "vitest",
+    "create:test-case": "bun run __test__/create-case.ts"
+  },
+  "dependencies": {
+    "helpers": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "exports": {
+    ".": "./index.ts"
+  }
+}

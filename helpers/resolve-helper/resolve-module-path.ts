@@ -1,0 +1,31 @@
+import ts from "typescript";
+
+export const resolveModulePath = (moduleName: string, program: ts.Program, containingFile?: string): string | undefined => {
+    const compilerOptions = program.getCompilerOptions();
+    const moduleResolutionHost: ts.ModuleResolutionHost = {
+        fileExists: ts.sys.fileExists,
+        readFile: ts.sys.readFile,
+        realpath: ts.sys.realpath,
+        getCurrentDirectory: () => program.getCurrentDirectory(),
+        getDirectories: ts.sys.getDirectories,
+        useCaseSensitiveFileNames: () => ts.sys.useCaseSensitiveFileNames
+    };
+    const resolved = ts.resolveModuleName(
+        moduleName,
+        // Use the importing file as the resolution base when available.
+        containingFile || program.getSourceFiles()[0]!.fileName,
+        compilerOptions,
+        moduleResolutionHost
+    );
+
+    return resolved.resolvedModule?.resolvedFileName;
+};
+
+export const getReactSourceFile = (program: ts.Program) => {
+    const reactTypesPath = resolveModulePath('react', program);
+    if(reactTypesPath) {
+        const sourceFile = program.getSourceFile(reactTypesPath);
+
+        return sourceFile;
+    }
+}

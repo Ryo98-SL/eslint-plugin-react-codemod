@@ -1,10 +1,10 @@
-import url from "url";
 import path from "path";
 
-export const ROOT_PATH = (() => {
-    const currentDirectory = url.fileURLToPath(new URL('.', import.meta.url));
-    const workspaceRoot = path.resolve(currentDirectory, '../');
-    return workspaceRoot;
-})();
+import {pkgUpSync} from "pkg-up";
 
-export const RULES_PATH = path.join(ROOT_PATH, "./src/rules");
+const pkgPath = pkgUpSync({ cwd: import.meta.url });
+if (!pkgPath) throw new Error('Can not find package.json');
+
+export const ROOT_DIR = path.dirname(pkgPath);
+
+export const RULES_PATH = path.join(ROOT_DIR, "./rules");

@@ -1,0 +1,19 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`create-hook base > matches snapshot 1`] = `
+"import { Dialog, type DialogAPI } from "helpers/test-helper/comps/dialog.tsx";
+import { useRef } from "react";
+
+
+const MyFc = () => {
+    const dialogRef = useRef<DialogAPI>(null);
+    return <Dialog ref={dialogRef} width={genClose().getWidth()}/>;
+}
+
+const genClose = () => {
+    return {
+        base: () => {},
+        getWidth: () => ({get: () => 1})
+    }
+}"
+`;
