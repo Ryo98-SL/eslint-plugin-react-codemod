@@ -1,70 +1,41 @@
 # eslint-plugin-react-codemod
 
-一个基于 ESLint 自动修复能力实现的 React codemod 工具。
+English | [简体中文](./README.zh-CN.md)
 
-它专注解决 React 组件中常见的几个机械性重构场景：
+A React codemod tool built on top of ESLint autofix.
 
-- 自动把 JSX 内联对象、数组、函数、调用结果等提取为 `useMemo` 或 `useCallback`
-- 自动为缺失的 `ref` / setter 变量创建 `useRef` 或 `useState`
-- 在可推断时补充 TypeScript 类型与对应 import
-- 通过 `eslint --fix` 或编辑器保存动作完成一轮轻量 codemod
+It focuses on a few repetitive React refactors:
 
-项目灵感来自 [eslint-plugin-command](https://github.com/antfu/eslint-plugin-command)，但这里的关注点是 React 场景下的 hook 包装与 hook 创建。
+- Automatically wraps inline JSX values such as objects, arrays, functions, and call results with `useMemo` or `useCallback`
+- Automatically creates missing `useRef` and `useState` declarations for identifiers used in JSX
+- Tries to generate TypeScript types and the related imports when type information is available
+- Runs as a lightweight codemod through `eslint --fix` or your editor's save action
 
-⚠️ 如果需要集成到你的项目，目前需要保证项目依赖了typescript
+This project is inspired by [eslint-plugin-command](https://github.com/antfu/eslint-plugin-command), but it focuses specifically on React hook wrapping and hook creation.
 
-## 为什么做这个
+⚠️ To integrate it into your project, make sure your project already depends on `typescript`.
 
-在 React 代码里，下面几类问题很常见：
+## Why
 
-- JSX props 中直接传入内联对象、数组、匿名函数，导致引用不断变化
-- 组件需要 `ref` 或状态 setter，但变量还没来得及声明
-- 手动重构这类代码重复度高，而且容易漏掉 import、类型和依赖数组
+These patterns are common in React codebases:
 
-`eslint-plugin-react-codemod` 利用 ESLint rule + autofix 的方式，把这些重复劳动变成可批量执行的 codemod。
+- Inline objects, arrays, and anonymous functions are passed directly into JSX props, causing unstable references
+- A `ref` or setter is needed in JSX, but the variable has not been declared yet
+- Manual refactors are repetitive and easy to get wrong when imports, types, and dependency arrays are involved
 
-## 功能概览
+`eslint-plugin-react-codemod` turns those repetitive fixes into codemods by combining ESLint rules with autofix.
 
-目前提供两条规则：
-
-### `react-codemod/wrap-hook`
-
-检测 JSX 属性中的内联值，并自动修复为：
-
-- `useMemo`
-- `useCallback`
-- 或在安全场景下抽到文件顶层常量
-
-支持处理的值类型包括：
-
-- 对象字面量
-- 数组字面量
-- 内联函数
-- 调用表达式返回值
-- `new` 表达式
-- 正则
-
-### `react-codemod/create-hook`
-
-当 JSX 中使用了尚未声明的标识符时，按命名模式自动补出 hook：
-
-- `dialogRef` -> `useRef(...)`
-- `setWidth` -> `useState(...)`
-- `setDialogNode` -> `useState(...)`
-
-并尽量根据目标组件 props 类型补出泛型类型。
-
-## 安装
+## Installation
 
 ```bash
 pnpm add -D eslint-plugin-react-codemod
 ```
 
-如果你的项目已经具备 ESLint 9 + TypeScript 运行环境，只需要再安装本插件即可。
+If your project already has ESLint 9 and TypeScript set up, installing this plugin is enough.
 
-## 快速开始
+## Quick Start
 
-这个插件面向 ESLint Flat Config。
+This plugin targets ESLint Flat Config.
 
 ```ts
 // eslint.config.js
@@ -76,19 +47,50 @@ export default [
 ];
 ```
 
-然后执行：
+Then run:
 
 ```bash
 eslint . --fix
 ```
 
-也可以直接依赖编辑器的 ESLint save action，在保存时自动完成修复。
+You can also rely on your editor's ESLint save action to apply fixes on save.
 
-## 效果示例
+## Features
 
-### 1. 自动包装 `useMemo` / `useCallback`
+The plugin currently provides two rules:
 
-输入：
+### `react-codemod/wrap-hook`
+
+Detects inline JSX prop values and automatically fixes them into:
+
+- `useMemo`
+- `useCallback`
+- or a top-level constant when that is safe
+
+Supported value kinds include:
+
+- object literals
+- array literals
+- inline functions
+- call expression results
+- `new` expressions
+- regular expressions
+
+### `react-codemod/create-hook`
+
+When JSX uses an identifier that has not been declared yet, the rule creates a hook based on its naming pattern:
+
+- `dialogRef` -> `useRef(...)`
+- `setWidth` -> `useState(...)`
+- `setDialogNode` -> `useState(...)`
+
+It also tries to infer the generic type from the target component prop when possible.
+
+## Examples
+
+### 1. Wrap values with `useMemo` / `useCallback`
+
+Input:
 
 ```tsx
 import { Modal } from "./Modal";
@@ -105,7 +107,7 @@ function Demo(props: { text: string; backgroundColor: string }) {
 }
 ```
 
-执行 `eslint --fix` 后：
+After `eslint --fix`:
 
 ```tsx
 import { Modal } from "./Modal";
@@ -125,9 +127,9 @@ function Demo(props: { text: string; backgroundColor: string }) {
 }
 ```
 
-### 2. 自动创建 `useRef`
+### 2. Create `useRef` automatically
 
-输入：
+Input:
 
 ```tsx
 import { Dialog } from "./Dialog";
@@ -135,7 +137,7 @@ import { Dialog } from "./Dialog";
 const Demo = () => <Dialog ref={dialogRef} />;
 ```
 
-执行后：
+After fixing:
 
 ```tsx
 import { Dialog, type DialogAPI } from "./Dialog";
@@ -147,9 +149,9 @@ const Demo = () => {
 };
 ```
 
-### 3. 自动创建 `useState`
+### 3. Create `useState` automatically
 
-输入：
+Input:
 
 ```tsx
 import { Dialog } from "./Dialog";
@@ -157,7 +159,7 @@ import { Dialog } from "./Dialog";
 const Demo = () => <Dialog width={setWidth} variant={setVariant} />;
 ```
 
-执行后：
+After fixing:
 
 ```tsx
 import { Dialog } from "./Dialog";
@@ -171,11 +173,11 @@ const Demo = () => {
 };
 ```
 
-## 注释触发模式
+## Comment-Driven Mode
 
-`wrap-hook` 支持用紧邻属性上方的注释，显式指定要使用的 hook。
+`wrap-hook` supports command-style comments directly above a prop to explicitly choose the hook to apply.
 
-例如：
+For example:
 
 ```tsx
 <Modal
@@ -186,19 +188,19 @@ const Demo = () => {
 />
 ```
 
-修复后会：
+After fixing:
 
-- `onClick` 被提取为 `useCallback`
-- `info` 被提取为 `useMemo`
-- 触发注释会在修复后被移除
+- `onClick` is extracted into `useCallback`
+- `info` is extracted into `useMemo`
+- the trigger comments are removed automatically
 
-如果你只想在写了注释时才触发，可以把对应规则配置成 `commentOnly: true`。
+If you only want transformations to run when a comment is present, set `commentOnly: true`.
 
-注意你不可在“onClick”上注释“// useMemo”，或者在“info“上注释”//useMemo“，只有方法类型的表达式才能注释为“useCallback”类，其余类型则为“useMemo”类，下面会详细讲解于此相关的“alternates”配置。
+Do not annotate `onClick` with `// useMemo`, and do not annotate `info` with `// useCallback`. Only function-like expressions can be handled as `useCallback`; all other supported value types belong to the `useMemo` family. This also matters when you define custom `alternates`.
 
-# 配置项
+## Configuration
 
-### `wrapHook` 包裹成useMemo或useCallback
+### `wrapHook`: wrap into `useMemo` or `useCallback`
 
 ```ts
 import reactCodemod from "eslint-plugin-react-codemod";
@@ -230,19 +232,19 @@ export default [
 ];
 ```
 
-常用字段说明：
+Common fields:
 
-- `typeDefinitions`: 是否尝试补充泛型类型与类型 import，默认true
-- `declarationsPosition`: 顶层常量插入在文件 `start` 或 `end，默认”end“`
-- `ignoredComponents`: 忽略某些组件名，支持字符串和正则配置，默认为所有内置组件如“div”
-- `checkFunction`: 是否处理内联函数，默认true
-- `checkArray`: 是否处理内联数组，默认true
-- `checkReturnValueOfCalling`: 是否处理调用表达式结果，默认true
-- `checkNewExpression`: 是否处理 `new Foo()，默认true`
-- `checkRegExp`: 是否处理正则字面量，默认true
-- `(useMemo | useCallback).commentOnly`: 只有写了注释时才对 `useMemo | useCallback `场景生效，默认false
+- `typeDefinitions`: tries to add generic types and type imports, default `true`
+- `declarationsPosition`: inserts hoisted top-level constants at `start` or `end`, default `end`
+- `ignoredComponents`: ignores specific component names, supports strings and regex configs
+- `checkFunction`: handles inline functions, default `true`
+- `checkArray`: handles inline arrays, default `true`
+- `checkReturnValueOfCalling`: handles call expression results, default `true`
+- `checkNewExpression`: handles `new Foo()`, default `true`
+- `checkRegExp`: handles regex literals, default `true`
+- `(useMemo | useCallback).commentOnly`: only runs the corresponding transform when a trigger comment is present, default `false`
 
-你也可以接入自定义 hook 别名：
+You can also plug in custom hook aliases:
 
 ```ts
 import reactCodemod from "eslint-plugin-react-codemod";
@@ -259,7 +261,7 @@ export default [
               hookName: "useMemoizedFn",
               hookModulePath: "ahooks",
               isDefaultExport: false,
-              withDepList: false, // ahooks' useMemoizedFn won't accept depList
+              withDepList: false,
             },
           ],
         },
@@ -280,7 +282,7 @@ export default [
 ];
 ```
 
-### `createHook` 创建useState或useRef
+### `createHook`: create `useState` or `useRef`
 
 ```ts
 import reactCodemod from "eslint-plugin-react-codemod";
@@ -292,26 +294,26 @@ export default [
       {
         allowAttributes: ["ref", { pattern: "^on[A-Z]" }, "width", "variant"],
         ignoredComponents: [{ pattern: "^(Pure|[a-z])" }],
-        typeDefinitions: true
+        typeDefinitions: true,
       },
     ],
   }),
 ];
 ```
 
-常用字段说明：
+Common fields:
 
-- `allowAttributes`: 允许自动创建 hook 的属性名，支持字符串和正则配置，默认["ref"]（可以使用["*"]表示所有属性，但会影响性能）
-- `ignoredComponents`: 忽略某些组件名，支持字符串和正则配置，默认为所有内置组件如“div”
-- `typeDefinitions`: 是否尝试补类型，默认true
-- `alternates`: 自定义 hook 匹配规则
+- `allowAttributes`: which prop names are allowed to auto-create hooks, supports strings and regex configs, default `["ref"]`; you can use `["*"]` for all props, but it may affect performance
+- `ignoredComponents`: ignores specific component names, supports strings and regex configs
+- `typeDefinitions`: tries to generate types, default `true`
+- `alternates`: custom hook matching rules
 
-默认内置规则：
+Built-in defaults:
 
-- 命中 `^\w+Ref` 的标识符优先创建 `useRef`
-- 命中 `^set(\w+)` 的标识符优先创建 `useState`
+- identifiers matching `^\w+Ref` prefer `useRef`
+- identifiers matching `^set(\w+)` prefer `useState`
 
-例如可以自定义一组替代规则：
+Example with custom alternates:
 
 ```ts
 import reactCodemod from "eslint-plugin-react-codemod";
@@ -345,34 +347,34 @@ export default [
 ];
 ```
 
-## 适用场景
+## Good Fit
 
-适合在这些场景中使用：
+This plugin works well for:
 
-- 为老代码做渐进式 React 性能清理
-- 在组件库或业务组件中批量消除 JSX 内联引用
-- 统一把漏写的 `ref` / state hook 补全
-- 把一次性的小规模重构收敛到 ESLint 工作流里
+- gradual React performance cleanup in older codebases
+- batch removal of inline JSX references in component libraries or app code
+- automatically filling in missing `ref` and state hook declarations
+- keeping one-off codemods inside the normal ESLint workflow
 
-## 设计思路
+## Design
 
-这个项目不是传统意义上的“代码质量检查插件”，而是把 ESLint 变成可落地的轻量级 codemod 引擎：
+This is not just a code quality plugin. It treats ESLint as a lightweight codemod engine:
 
-- 通过 rule 定位可改写的 React 模式
-- 通过 autofix 输出结构化改动
-- 通过 TypeScript parser services 推断类型与 import
-- 通过注释和规则选项控制触发范围
+- rules locate React patterns that can be rewritten
+- autofix emits the final code transformation
+- TypeScript parser services help infer types and imports
+- comments and rule options control when a transformation should run
 
-这也是它和 `eslint-plugin-command` 一脉相承的地方：把 ESLint 从“提示问题”扩展成“执行一次性重构”。
+That is also where it aligns with `eslint-plugin-command`: extending ESLint from "reporting issues" to "executing one-off refactors".
 
-## 限制说明
+## Limitations
 
-- 当前主要面向 `tsx` / `jsx` 中的 React 函数组件
-- 依赖 TypeScript 类型信息时，需要 ESLint 能正确拿到项目类型服务
-- 自动生成的依赖数组与类型提取是启发式行为，复杂场景建议人工复核
-- 更适合批量执行小型 codemod，而不是替代大型 AST 迁移脚本
+- It currently targets React function components in `tsx` and `jsx`
+- Type-related fixes require ESLint to have working TypeScript project services
+- Generated dependency arrays and type extraction are heuristic-based and should be reviewed in complex cases
+- It is best suited for small, batchable codemods rather than large migration scripts
 
-## 开发
+## Development
 
 ```bash
 bun install
