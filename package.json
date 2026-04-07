@@ -8,9 +8,12 @@
   "version": "0.1.0",
   "private": false,
   "scripts": {
-    "test": "vitest",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "lint": "bun run /src/lint.ts",
-    "build": "bun run /scripts/bun-build.ts"
+    "build": "bun run /scripts/bun-build.ts",
+    "prepare": "husky",
+    "prepublishOnly": "npm test"
   },
   "files": [
     "dist",
@@ -38,6 +41,7 @@
     "bun-plugin-dts": "^0.4.0",
     "fs-extra": "^11.3.1",
     "glob": "^11.0.3",
+    "husky": "^9.1.7",
     "pkg-up": "^5.0.0",
     "react": "^19.1.0",
     "tsx": "^4.19.3",
