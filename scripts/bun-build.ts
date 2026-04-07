@@ -1,5 +1,6 @@
 import {ROOT_DIR} from '../paths/index';
 import path from "path";
+import dts from "bun-plugin-dts";
 
 console.time('build time')
 Bun.build({
@@ -17,7 +18,8 @@ Bun.build({
      '@typescript-eslint/eslint-plugin',
      'typescript-eslint',
      "typescript"
-    ]
+    ],
+    plugins: [dts()],
 })
 .then(() => {
     console.timeEnd('build time')

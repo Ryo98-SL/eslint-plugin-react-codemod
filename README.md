@@ -1,6 +1,6 @@
 # eslint-plugin-react-codemod
 
-English | [简体中文](./README.zh-CN.md)
+English | [简体中文](https://github.com/Ryo98-SL/eslint-plugin-react-codemod/blob/main/README.zh-CN.md)
 
 A React codemod tool built on top of ESLint autofix.
 

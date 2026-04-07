@@ -345,7 +345,9 @@ export function analyzeTypeAndCreateImports(
             const _context = { from: [tsChecker.typeToString(type) + '_1', ...context.from] };
 
             let target:UnionOrIntersectionType
+            // @ts-ignore
             if(type.origin && type.origin.isUnionOrIntersection()) {
+                // @ts-ignore
                 target = type.origin;
             } else {
                 target = type;

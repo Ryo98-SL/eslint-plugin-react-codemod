@@ -1,6 +1,6 @@
 # eslint-plugin-react-codemod
 
-[English](./README.md) | 简体中文
+[English](https://github.com/Ryo98-SL/eslint-plugin-react-codemod/blob/main/README.md) | 简体中文
 
 一个基于 ESLint 自动修复能力实现的 React codemod 工具。
 

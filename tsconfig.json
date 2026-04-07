@@ -24,7 +24,8 @@
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false,
     "paths": {
-    }
+    },
+    "types": ["node"]
   },
 
   "exclude": ["dist","**/*.txt", "**/*.json"]
