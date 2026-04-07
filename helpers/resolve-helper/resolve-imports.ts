@@ -331,7 +331,6 @@ export function analyzeTypeAndCreateImports(
     // Recursive function to analyze types and collect imports
     function collectTypesToImport(type: ts.Type, visited = new Set<ts.Type>(), context: {from: string[]}) {
         const typeStr = tsChecker.typeToString(type);
-        console.log(`=> type ${typeStr}`, util.inspect(type, false, 0), context.from);
 
         if (visited.has(type)) return;
         visited.add(type);
@@ -360,7 +359,6 @@ export function analyzeTypeAndCreateImports(
         // Handle generic type parameters
         if (type.flags & ts.TypeFlags.Object && !type.aliasSymbol) {
 
-            console.log(`=> ${typeStr} hit object`)
 
             const _context = { from: [tsChecker.typeToString(type) + '_2', ...context.from] };
 
@@ -420,7 +418,6 @@ export function analyzeTypeAndCreateImports(
                 const moduleDir = path.dirname(sourceFile.fileName);
 
                 let withAliasPath: string | null = null;
-                console.log('=> aliasPaths', {aliasPaths, configPath, current: currentFilePath})
                 if(aliasPaths && configPath ) {
                     withAliasPath = resolvePathToAlias(moduleInfo.moduleName, configPath, program.getCompilerOptions(), currentFilePath)
                 }
@@ -439,14 +436,6 @@ export function analyzeTypeAndCreateImports(
                 }
 
                 const isInterfaceType = ((type.flags & TypeFlags.Object) && ((type as ts.ObjectType).objectFlags & ObjectFlags.Interface)) !== 0;
-
-                console.log("=>(utils.ts:845) analyze type", {
-                    moduleInfo,
-                    isArrayType: tsChecker.isArrayType(type),
-                    isInterfaceType,
-                    aliasSymbol: type.aliasSymbol?.name,
-                    typeString: tsChecker.typeToString(type)
-                });
 
 
                 if (!type.aliasSymbol && !isInterfaceType) {

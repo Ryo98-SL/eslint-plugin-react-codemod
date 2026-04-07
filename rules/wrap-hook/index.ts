@@ -181,7 +181,6 @@ export const wrapHook = createRule({
 
         const tsService = ESLintUtils.getParserServices(context);
 
-        console.log('=> hookConfig', hookConfig);
         const sourceFile = tsService.program.getSourceFile(context.filename);
 
         const shouldAddTypes = options.typeDefinitions !== false && Boolean(sourceFile?.fileName.endsWith('tsx'));
@@ -387,7 +386,6 @@ export const wrapHook = createRule({
                      *                        so this callback of "onClick" couldn't get extracted as a top-level constant
                      *  }}>{count}</button>
                      */
-                    console.log(`=> ${componentName} ${node.name.name} attribute exists references to states of component:`, componentScopedReferences.map(r => r.symbol.name));
                     scenes.add('hook');
                 } else {
                     scenes.add('top-level-constant');
@@ -436,7 +434,6 @@ export const wrapHook = createRule({
                     attrType = getExtractType(componentName, propName, attrType, hook.hookName, resolvedTypeInfo, tsService, tsChecker);
                 }
 
-                console.log("=>(rule.ts:203) importUpdateResults", importUpdateResults.length, '\n\n');
                 const programNode = context.sourceCode.ast;
                 const suggestList: MutableArray<Parameters<typeof context.report>[0]['suggest'] & {}> = [];
                 type FixFn = Parameters<typeof context.report>[0]['fix'];

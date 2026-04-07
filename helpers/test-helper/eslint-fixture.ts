@@ -138,8 +138,8 @@ export function defineFixtureSnapshotTest({
     }, FIXTURE_HOOK_TIMEOUT_MS);
 
     describe(`${suiteName} ${caseName}`, () => {
-        test("matches snapshot", () => {
-            const fileContent = fs.readFileSync(fixturePaths.out, "utf8");
+        test.concurrent("matches snapshot", async () => {
+            const fileContent = await fsPromises.readFile(fixturePaths.out, "utf8");
             expect(fileContent).toMatchSnapshot();
         });
     });
