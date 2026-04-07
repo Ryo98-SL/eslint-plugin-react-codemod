@@ -1,6 +1,7 @@
 import {
     addIndentationToEachLine,
     analyzeTypeAndCreateImports,
+    CREATE_HOOK_RULE_DEFAULT_OPTIONS,
     type CreateHookRuleOptions,
     createRule,
     findTsConfigPath,
@@ -30,15 +31,10 @@ export const createHook = createRule({
         docs: {
             description: "auto create a hook for attributes within your function component",
         },
-        defaultOptions: [
-            {
-                typeDefinitions: true,
-                ignoredComponents: [],
-                alternates: [],
-                allowAttributes: ["ref"],
-            }
-        ],
         fixable: "code",
+        defaultOptions: [
+            CREATE_HOOK_RULE_DEFAULT_OPTIONS
+        ],
         schema: [{
             type: "object",
             properties: {
@@ -129,7 +125,6 @@ export const createHook = createRule({
             'fast-create-hook': 'create a reference hook "{{hookName}}" assigned with a variable named "{{name}}"',
         }
     },
-    defaultOptions: [],
     create(context) {
         const options: CreateHookRuleOptions = context.options[0]!;
 

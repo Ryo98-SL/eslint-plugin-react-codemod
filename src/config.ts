@@ -4,6 +4,14 @@ import {BaseConfig} from "./base-config.ts";
 
 type RuleLevel = FlatConfig.RuleLevel;
 
+const createRuleEntry = <T>(option?: [RuleLevel, T]): [RuleLevel] | [RuleLevel, T] => {
+    const level = option?.[0] ?? "warn";
+
+    return option?.[1] === undefined
+        ? [level]
+        : [level, option[1]];
+}
+
 
 function reactCodemodConfig<H extends HookPattern = HookPattern>(
 options?: {
@@ -16,8 +24,8 @@ options?: {
         ...BaseConfig,
         rules: {
             ...BaseConfig.rules,
-            "react-codemod/wrap-hook": [ options?.wrapHook?.[0] ?? "warn", options?.wrapHook?.[1]],
-            "react-codemod/create-hook": [options?.createHook?.[0] ?? "warn", options?.createHook?.[1]],
+            "react-codemod/wrap-hook": createRuleEntry(options?.wrapHook),
+            "react-codemod/create-hook": createRuleEntry(options?.createHook),
         }
     }
 }

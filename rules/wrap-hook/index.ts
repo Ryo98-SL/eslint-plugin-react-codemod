@@ -40,9 +40,6 @@ import {HOOK_CONFIG_SHAPE, REF_PATTERN, SET_STATE_TYPE_STRING_PATTERN} from "hel
 export const wrapHook = createRule({
     name: 'wrap-hook',
     meta: {
-        defaultOptions: [
-            WRAP_HOOK_RULE_DEFAULT_OPTIONS
-        ],
         type: "suggestion",
         docs: {
             description: "Prevent inline object literals in React JSX props and add proper type definitions",
@@ -54,7 +51,9 @@ export const wrapHook = createRule({
             'fixWithTopLevelScopeConstant': 'Hoist the value to create a top-level variable "{{name}}"'
         },
         hasSuggestions: true,
-
+        defaultOptions: [
+            WRAP_HOOK_RULE_DEFAULT_OPTIONS
+        ],
         schema: [
             {
                 type: "object",
@@ -132,7 +131,6 @@ export const wrapHook = createRule({
             }
         ],
     },
-    defaultOptions: [], // The type for this option is put in the wrong place by @typescript-eslint/utils, ignore it.
     create(context) {
 
         // Get options
@@ -596,4 +594,3 @@ const normalizeAlternates = (alternates?:WrapAlternate[]) => {
         }
     });
 }
-
