@@ -48,6 +48,7 @@ export type ResolvedCompPropTypeInfo = { type: ts.Type, propsType: ts.Type };
 
 export interface WrapHookOptions<H extends HookPattern = HookPattern> {
     typeDefinitions?: boolean;
+    allowAttributes?: (string | RegExpConfig)[];
     ignoredComponents?: (string | RegExpConfig)[];
     declarationsPosition?: 'start' | 'end';
     checkFunction?: boolean;

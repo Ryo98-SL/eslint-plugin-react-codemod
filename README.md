@@ -211,6 +211,7 @@ export default [
       "warn",
       {
         typeDefinitions: true,
+        allowAttributes: ["onClick", { pattern: "^(info|sx)$" }],
         declarationsPosition: "end",
         checkFunction: true,
         checkArray: true,
@@ -235,6 +236,7 @@ export default [
 Common fields:
 
 - `typeDefinitions`: tries to add generic types and type imports, default `true`
+- `allowAttributes`: limits which prop names are checked, supports strings and regex configs, default `["*"]`
 - `declarationsPosition`: inserts hoisted top-level constants at `start` or `end`, default `end`
 - `ignoredComponents`: ignores specific component names, supports strings and regex configs
 - `checkFunction`: handles inline functions, default `true`

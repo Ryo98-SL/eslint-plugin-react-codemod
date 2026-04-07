@@ -59,6 +59,25 @@ export const wrapHook = createRule({
             {
                 type: "object",
                 properties: {
+                    allowAttributes: {
+                        type: "array",
+                        items: {
+                            oneOf: [
+                                {
+                                    type: "string"
+                                },
+                                {
+                                    type: "object",
+                                    properties: {
+                                        pattern: {type: "string"},
+                                        flags: {type: "string"}
+                                    },
+                                    required: ["pattern"],
+                                    additionalProperties: false
+                                }
+                            ]
+                        }
+                    },
                     checkFunction: {
                         type: "boolean",
                     },
@@ -156,6 +175,12 @@ export const wrapHook = createRule({
             useCallback: normalizeAlternates(hookConfig.useCallback.alternates),
         }
 
+        const allowAllAttributes = !options.allowAttributes || options.allowAttributes.some((attr) => attr === '*');
+        const {
+            exactSet: allowAttrExactSet,
+            regexpList: allowAttrRegexpList
+        } = processMatchConfig(options.allowAttributes || []);
+
         const tsService = ESLintUtils.getParserServices(context);
 
         console.log('=> hookConfig', hookConfig);
@@ -187,6 +212,13 @@ export const wrapHook = createRule({
             // Detect object literals in JSX attributes
             JSXAttribute(node) {
                 if (!node.value) return;
+                if (typeof node.name.name !== "string") return;
+
+                const attrName = node.name.name;
+                if (!allowAllAttributes && !matchWithExactOrRegex(attrName, allowAttrExactSet, allowAttrRegexpList)) {
+                    return;
+                }
+
                 if (node.value.type !== AST_NODE_TYPES.JSXExpressionContainer) return;
 
                 const expressionType = node.value.expression.type;
@@ -299,7 +331,7 @@ export const wrapHook = createRule({
                 }
 
 
-                const propName = node.name.name as string;
+                const propName = attrName;
 
                 const references = findReferenceUsagesInScope(tsService, expression);
 
@@ -564,5 +596,4 @@ const normalizeAlternates = (alternates?:WrapAlternate[]) => {
         }
     });
 }
-
 

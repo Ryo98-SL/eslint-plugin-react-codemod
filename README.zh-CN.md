@@ -211,6 +211,7 @@ export default [
       "warn",
       {
         typeDefinitions: true,
+        allowAttributes: ["onClick", { pattern: "^(info|sx)$" }],
         declarationsPosition: "end",
         checkFunction: true,
         checkArray: true,
@@ -235,6 +236,7 @@ export default [
 常用字段说明：
 
 - `typeDefinitions`: 是否尝试补充泛型类型与类型 import，默认 `true`
+- `allowAttributes`: 允许检查的属性名，支持字符串和正则配置，默认 `["*"]`
 - `declarationsPosition`: 顶层常量插入在文件 `start` 或 `end`，默认 `end`
 - `ignoredComponents`: 忽略某些组件名，支持字符串和正则配置
 - `checkFunction`: 是否处理内联函数，默认 `true`

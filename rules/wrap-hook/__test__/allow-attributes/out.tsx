@@ -1,0 +1,13 @@
+import {Modal} from "helpers/test-helper/comps/modal";
+import { useCallback } from "react";
+
+function Demo(props: { label: string }) {
+    
+    const handleModalClick = useCallback<(Parameters<typeof Modal>[0]["onClick"]) & Function>(() => {
+        console.log(props.label);
+    }, [props.label, props]);
+    return <Modal
+        info={{size: 10}}
+        onClick={handleModalClick}
+    />;
+}

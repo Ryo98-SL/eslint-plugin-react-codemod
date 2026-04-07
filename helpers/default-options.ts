@@ -6,6 +6,7 @@ export const WRAP_HOOK_RULE_DEFAULT_OPTIONS = <WrapHookOptions>{
     checkReturnValueOfCalling: true,
     checkNewExpression: true,
     checkRegExp: true,
+    allowAttributes: ["*"],
     ignoredComponents: ["^[a-z][^.]*$"],
     typeDefinitions: true,
     declarationsPosition: 'end',
