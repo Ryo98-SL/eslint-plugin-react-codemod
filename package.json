@@ -9,9 +9,14 @@
   "private": false,
   "scripts": {
     "test": "vitest run",
+    "test:file-fixture": "ESLINT_RULE_FIXTURE_MODE=file vitest run",
     "test:watch": "vitest",
+    "test:watch:file-fixture": "ESLINT_RULE_FIXTURE_MODE=file vitest",
     "lint": "bun run /src/lint.ts",
     "build": "bun run /scripts/bun-build.ts",
+    "docs:dev": "bun run --cwd docs docs:dev",
+    "docs:build": "bun run --cwd docs docs:build",
+    "docs:preview": "bun run --cwd docs docs:preview",
     "prepare": "husky",
     "prepublishOnly": "npm test"
   },
@@ -21,6 +26,7 @@
     "LICENSE"
   ],
   "workspaces": [
+    "docs",
     "helpers",
     "rules/*"
   ],

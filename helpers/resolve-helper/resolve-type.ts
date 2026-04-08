@@ -33,7 +33,6 @@ export const resolveContainingType = (targetType: ts.Type, potentialContainerTyp
             for (const p of _fromType.getProperties()) {
                 const vd = p.valueDeclaration && tsChecker.getTypeAtLocation(p.valueDeclaration);
                 const isSame = vd === _targetType;
-                console.log(`property ${p.name}`, {isSame, ts: tsChecker.typeToString(_targetType), vds: vd && tsChecker.typeToString(vd)});
 
                 if(isSame || (vd && visit(_targetType, vd))) {
                     found = true;
@@ -42,7 +41,7 @@ export const resolveContainingType = (targetType: ts.Type, potentialContainerTyp
             }
 
         } else {
-            console.log(`fromType ${tsChecker.typeToString(_fromType)} not handle`, {flags: _fromType.flags}, util.inspect(_fromType, {depth: 0}))
+            // console.log(`fromType ${tsChecker.typeToString(_fromType)} not handle`, {flags: _fromType.flags}, util.inspect(_fromType, {depth: 0}))
         }
 
         if(found) {

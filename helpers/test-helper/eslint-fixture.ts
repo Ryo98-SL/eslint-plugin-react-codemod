@@ -1,7 +1,6 @@
 import * as parser from "@typescript-eslint/parser";
-import {beforeAll, describe, expect, test} from "vitest";
+import {describe, expect, test} from "vitest";
 import eslint from "eslint";
-import fs from "fs";
 import fsPromises from "fs/promises";
 import path from "path";
 import {pkgUpSync} from "pkg-up";
@@ -10,9 +9,16 @@ import url from "url";
 
 const tsconfigRootDir = path.dirname(pkgUpSync({cwd: import.meta.url})!);
 const FIXTURE_HOOK_TIMEOUT_MS = 30_000;
+const FILE_FIXTURE_MODE_ENV_NAME = "ESLINT_RULE_FIXTURE_MODE";
 
 export type FixturePaths = Record<"in" | "out", string>;
 export type RuleTestConfig = Record<string, any>;
+export type RuleFixtureMode = "memory" | "file";
+export type RuleFixtureResult = {
+    fixturePaths: FixturePaths;
+    mode: RuleFixtureMode;
+    output: string;
+};
 
 export const BASE_TSX_RULE_TEST_CONFIG: RuleTestConfig = {
     languageOptions: {
@@ -99,10 +105,9 @@ export async function runRuleFixture(
     testCaseDir: string,
     baseConfig: RuleTestConfig,
     overrideConfig: RuleTestConfig = {},
-) {
+    mode: RuleFixtureMode = resolveRuleFixtureMode(),
+): Promise<RuleFixtureResult> {
     const fixturePaths = resolveFixturePaths(testCaseDir);
-    await fsPromises.copyFile(fixturePaths.in, fixturePaths.out);
-
     const linter = new eslint.ESLint({
         fix: true,
         fixTypes: ["suggestion"],
@@ -111,18 +116,41 @@ export async function runRuleFixture(
         overrideConfig: tslint.config(mergeRuleTestConfig(baseConfig, overrideConfig)),
     });
 
-    const results = await linter.lintFiles([fixturePaths.out]);
-    await eslint.ESLint.outputFixes(results);
+    if (mode === "file") {
+        await fsPromises.copyFile(fixturePaths.in, fixturePaths.out);
 
-    return fixturePaths;
+        const results = await linter.lintFiles([fixturePaths.out]);
+        await eslint.ESLint.outputFixes(results);
+
+        return {
+            fixturePaths,
+            mode,
+            output: await fsPromises.readFile(fixturePaths.out, "utf8"),
+        };
+    }
+
+    const input = await fsPromises.readFile(fixturePaths.in, "utf8");
+    const [result] = await linter.lintText(input, {
+        filePath: fixturePaths.out,
+    });
+
+    return {
+        fixturePaths,
+        mode,
+        output: result?.output ?? result?.source ?? input,
+    };
 }
 
 type DefineFixtureSnapshotTestOptions = {
     caseName: string;
     suiteName: string;
     importMetaUrl: string;
-    runFixture: (testCaseDir: string) => Promise<unknown>;
+    runFixture: (testCaseDir: string) => Promise<RuleFixtureResult>;
 };
+
+export function resolveRuleFixtureMode(): RuleFixtureMode {
+    return process.env[FILE_FIXTURE_MODE_ENV_NAME] === "file" ? "file" : "memory";
+}
 
 export function defineFixtureSnapshotTest({
     caseName,
@@ -131,16 +159,11 @@ export function defineFixtureSnapshotTest({
     runFixture,
 }: DefineFixtureSnapshotTestOptions) {
     const testCaseDir = path.dirname(url.fileURLToPath(importMetaUrl));
-    const fixturePaths = resolveFixturePaths(testCaseDir);
-
-    beforeAll(async () => {
-        await runFixture(testCaseDir);
-    }, FIXTURE_HOOK_TIMEOUT_MS);
 
     describe(`${suiteName} ${caseName}`, () => {
         test.concurrent("matches snapshot", async () => {
-            const fileContent = await fsPromises.readFile(fixturePaths.out, "utf8");
-            expect(fileContent).toMatchSnapshot();
-        });
+            const result = await runFixture(testCaseDir);
+            expect(result.output).toMatchSnapshot();
+        }, FIXTURE_HOOK_TIMEOUT_MS);
     });
 }

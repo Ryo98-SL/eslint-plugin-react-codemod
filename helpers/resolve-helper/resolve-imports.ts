@@ -666,10 +666,6 @@ const checkAlreadyImportTheName = (_name: string, _type: ts.Type, tsChecker: ts.
         }
     }
 
-    if (alreadyHave) {
-        console.log(`=> already have ${alreadyHave.node.getText()} - ${tsChecker.typeToString(alreadyHave.type)} => ${tsChecker.typeToString(_type)}`, util.inspect(alreadyHave, false, 0))
-    }
-
     return alreadyHave;
 }
 

@@ -1,0 +1,41 @@
+.VPSidebarItem.level-0.is-link + .VPSidebarItem.level-0 .item:first-child {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--vp-c-divider);
+}
+
+.VPHomeHero .image-container {
+  width: min(48vw, 420px);
+  height: min(48vw, 420px);
+}
+
+.VPHomeHero .image-src {
+  max-width: min(48vw, 420px);
+  max-height: min(48vw, 420px);
+}
+
+@media (max-width: 960px) {
+  .VPHomeHero .image-container {
+    width: min(60vw, 320px);
+    height: min(60vw, 320px);
+  }
+
+  .VPHomeHero .image-src {
+    max-width: min(60vw, 320px);
+    max-height: min(60vw, 320px);
+  }
+
+  .VPNavBar .VPNavBarTranslations,
+  .VPNavBar .VPNavBarAppearance,
+  .VPNavBar .VPNavBarSocialLinks {
+    display: flex !important;
+  }
+
+  .VPNavBar .VPNavBarExtra {
+    display: none !important;
+  }
+
+  .VPNavBar .content-body {
+    gap: 8px;
+  }
+}

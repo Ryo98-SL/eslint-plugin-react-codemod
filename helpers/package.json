@@ -3,6 +3,9 @@
   "module": "index.ts",
   "type": "module",
   "private": true,
+  "scripts": {
+    "test:file-fixture": "ESLINT_RULE_FIXTURE_MODE=file vitest"
+  },
   "devDependencies": {
     "@types/bun": "latest"
   },
