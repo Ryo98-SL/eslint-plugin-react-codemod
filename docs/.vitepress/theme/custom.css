@@ -1,3 +1,7 @@
+:root {
+  --vp-sidebar-width: 304px;
+}
+
 .VPSidebarItem.level-0.is-link + .VPSidebarItem.level-0 .item:first-child {
   margin-top: 16px;
   padding-top: 16px;

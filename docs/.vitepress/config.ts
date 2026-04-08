@@ -1,10 +1,12 @@
 import { defineConfig, type DefaultTheme } from "vitepress";
 
+const base = "/eslint-plugin-react-codemod/";
 const repo = "Ryo98-SL/eslint-plugin-react-codemod";
 
 function createThemeConfig(isZh: boolean): DefaultTheme.Config {
   return {
-    logo: "/logo.svg",
+    logo: `${base}logo.svg`,
+    siteTitle: "ESLint Plugin React Codemod",
     nav: [],
     sidebar: isZh
       ? [
@@ -61,11 +63,11 @@ export default defineConfig({
   description: "React codemod docs powered by VitePress.",
   lang: "en-US",
   srcDir: ".",
-  base: "/eslint-plugin-react-codemod/",
+  base,
   cleanUrls: true,
   lastUpdated: true,
   head: [
-    ["link", { rel: "icon", href: "/logo.svg" }],
+    ["link", { rel: "icon", href: `${base}logo.svg` }],
     [
       "style",
       {},
@@ -87,6 +89,22 @@ export default defineConfig({
 
         .VPNavBar .content-body {
           gap: 8px;
+        }
+        
+
+        .VPNavBar .VPNavBarTranslations,
+        .VPNavBar .VPNavBarAppearance,
+        .VPNavBar .VPNavBarSocialLinks {
+          border-left: 0 !important;
+          padding-left: 0 !important;
+          margin-left: 0 !important;
+        }
+
+        .VPNavBar .VPNavBarTranslations::before,
+        .VPNavBar .VPNavBarAppearance::before,
+        .VPNavBar .VPNavBarSocialLinks::before,
+        .VPNavBar .VPNavBarDivider {
+          display: none !important;
         }
 
         @media (max-width: 1280px) {
