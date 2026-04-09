@@ -14,6 +14,88 @@ export default [
 
 You can enable and customize each rule through the helper options.
 
+## `alternates`
+
+Use `alternates` to register recognized alternative implementations, so the plugin knows which equivalent or extended hook forms it can work with.
+
+If you want autofix to prefer a specific hook name, use `prefer` to select that target explicitly. The two options usually work together: `alternates` registers candidates, and `prefer` chooses one.
+
+### `alternates` in `wrapHook`
+
+The example below first registers `ahooks` alternatives with `alternates`, then uses `prefer` to make the plugin generate `useMemoizedFn` and `useCreation`:
+
+```ts
+import reactCodemod from "eslint-plugin-react-codemod";
+
+export default [
+  reactCodemod({
+    wrapHook: [
+      "warn",
+      {
+        useCallback: {
+          prefer: "useMemoizedFn",
+          alternates: [
+            {
+              hookName: "useMemoizedFn",
+              hookModulePath: "ahooks",
+              isDefaultExport: false,
+              withDepList: false,
+            },
+          ],
+        },
+        useMemo: {
+          prefer: "useCreation",
+          alternates: [
+            {
+              hookName: "useCreation",
+              hookModulePath: "ahooks",
+              isDefaultExport: false,
+              withDepList: true,
+            },
+          ],
+        },
+      },
+    ],
+  }),
+];
+```
+
+### `alternates` in `createHook`
+
+You can also register custom hook generation rules based on naming patterns:
+
+```ts
+import reactCodemod from "eslint-plugin-react-codemod";
+
+export default [
+  reactCodemod({
+    createHook: [
+      "warn",
+      {
+        allowAttributes: ["*"],
+        alternates: [
+          {
+            kind: "reference",
+            hookName: "useComposedRef",
+            hookModulePath: "@radix-ui/react-compose-refs",
+            isDefaultExport: false,
+            matchPattern: "^composedRef$",
+          },
+          {
+            kind: "state",
+            hookName: "useAtom",
+            hookModulePath: "jotai",
+            isDefaultExport: false,
+            matchPattern: "^set(\\w+)",
+            stateVariableNamePattern: "$1",
+          },
+        ],
+      },
+    ],
+  }),
+];
+```
+
 ## `wrapHook`
 
 Use `wrapHook` to transform unstable JSX values into `useMemo` or `useCallback`:
@@ -62,44 +144,6 @@ Common fields:
 - `checkRegExp`: handles regex literals, default `true`
 - `(useMemo | useCallback).commentOnly`: only runs the corresponding transform when a trigger comment is present, default `false`
 
-You can also plug in custom hook aliases:
-
-```ts
-import reactCodemod from "eslint-plugin-react-codemod";
-
-export default [
-  reactCodemod({
-    wrapHook: [
-      "warn",
-      {
-        useCallback: {
-          prefer: "useMemoizedFn",
-          alternates: [
-            {
-              hookName: "useMemoizedFn",
-              hookModulePath: "ahooks",
-              isDefaultExport: false,
-              withDepList: false,
-            },
-          ],
-        },
-        useMemo: {
-          prefer: "useCreation",
-          alternates: [
-            {
-              hookName: "useCreation",
-              hookModulePath: "ahooks",
-              isDefaultExport: false,
-              withDepList: true,
-            },
-          ],
-        },
-      },
-    ],
-  }),
-];
-```
-
 ## `createHook`
 
 Use `createHook` to generate `useRef` or `useState` when JSX refers to identifiers that do not exist yet:
@@ -132,37 +176,3 @@ Built-in defaults:
 
 - identifiers matching `^\w+Ref` prefer `useRef`
 - identifiers matching `^set(\w+)` prefer `useState`
-
-Example with custom alternates:
-
-```ts
-import reactCodemod from "eslint-plugin-react-codemod";
-
-export default [
-  reactCodemod({
-    createHook: [
-      "warn",
-      {
-        allowAttributes: ["*"],
-        alternates: [
-          {
-            kind: "reference",
-            hookName: "useComposedRef",
-            hookModulePath: "@radix-ui/react-compose-refs",
-            isDefaultExport: false,
-            matchPattern: "^composedRef$",
-          },
-          {
-            kind: "state",
-            hookName: "useAtom",
-            hookModulePath: "jotai",
-            isDefaultExport: false,
-            matchPattern: "^set(\\w+)",
-            stateVariableNamePattern: "$1",
-          },
-        ],
-      },
-    ],
-  }),
-];
-```

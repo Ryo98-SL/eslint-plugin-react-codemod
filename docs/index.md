@@ -3,7 +3,7 @@ layout: home
 
 hero:
   name: ESLint Plugin
-  text: React Codemods
+  text: React Codemod
   tagline: Turn repetitive React refactors into lightweight codemods.
   image:
     src: /logo.svg

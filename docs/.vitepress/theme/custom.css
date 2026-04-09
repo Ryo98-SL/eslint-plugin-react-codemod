@@ -1,5 +1,5 @@
 :root {
-  --vp-sidebar-width: 304px;
+  --vp-sidebar-width: 322px;
 }
 
 .VPSidebarItem.level-0.is-link + .VPSidebarItem.level-0 .item:first-child {

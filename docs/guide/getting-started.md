@@ -28,6 +28,50 @@ Or run:
 eslint Foo.tsx  --fix
 ```
 
+## Configuration
+
+If you want the plugin to recognize alternative hook implementations already used in your project, start by configuring `alternates`. If you want autofix to prefer a specific hook name, then use `prefer` to select it explicitly.
+
+For example, if your project already uses `ahooks`:
+
+```ts
+import reactCodemod from "eslint-plugin-react-codemod";
+
+export default [
+  reactCodemod({
+    wrapHook: [
+      "warn",
+      {
+        useCallback: {
+          prefer: "useMemoizedFn",
+          alternates: [
+            {
+              hookName: "useMemoizedFn",
+              hookModulePath: "ahooks",
+              isDefaultExport: false,
+              withDepList: false,
+            },
+          ],
+        },
+        useMemo: {
+          prefer: "useCreation",
+          alternates: [
+            {
+              hookName: "useCreation",
+              hookModulePath: "ahooks",
+              isDefaultExport: false,
+              withDepList: true,
+            },
+          ],
+        },
+      },
+    ],
+  }),
+];
+```
+
+If you need to generate custom hooks based on naming conventions, you can also configure `alternates` in `createHook`. See the Configuration page for the full field reference.
+
 ## Good Fit
 
 This plugin works well for:
@@ -43,47 +87,3 @@ This plugin works well for:
 - Type-related fixes require ESLint to have working TypeScript project services
 - Generated dependency arrays and type extraction are heuristic-based and should be reviewed in complex cases
 - It is best suited for small, batchable codemods rather than large migration scripts
-
-## Documentation Development
-
-The repository uses `bun` workspaces. Install dependencies from the project root:
-
-```bash
-bun install
-```
-
-Start the VitePress site:
-
-```bash
-bun run docs:dev
-```
-
-Build the static output:
-
-```bash
-bun run docs:build
-```
-
-Preview the production build locally:
-
-```bash
-bun run docs:preview
-```
-
-The generated site is written to `docs/.vitepress/dist`.
-
-## GitHub Pages Deployment
-
-The documentation site is configured for the GitHub Pages project site path:
-
-```txt
-/eslint-plugin-react-codemod/
-```
-
-That matches the default URL:
-
-```txt
-https://ryo98-sl.github.io/eslint-plugin-react-codemod/
-```
-
-If the repository name or GitHub account changes, update `docs/.vitepress/config.ts`.

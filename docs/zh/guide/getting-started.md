@@ -28,7 +28,49 @@ export default [
 eslint App.tsx --fix
 ```
 
-<br />
+## 配置
+
+如果你希望插件识别项目里已经在用的 hook 替代实现，建议先配置 `alternates`；如果希望自动修复时优先使用某个 hook 名，再通过 `prefer` 明确指定。
+
+例如项目里已经使用 `ahooks`：
+
+```ts
+import reactCodemod from "eslint-plugin-react-codemod";
+
+export default [
+  reactCodemod({
+    wrapHook: [
+      "warn",
+      {
+        useCallback: {
+          prefer: "useMemoizedFn",
+          alternates: [
+            {
+              hookName: "useMemoizedFn",
+              hookModulePath: "ahooks",
+              isDefaultExport: false,
+              withDepList: false,
+            },
+          ],
+        },
+        useMemo: {
+          prefer: "useCreation",
+          alternates: [
+            {
+              hookName: "useCreation",
+              hookModulePath: "ahooks",
+              isDefaultExport: false,
+              withDepList: true,
+            },
+          ],
+        },
+      },
+    ],
+  }),
+];
+```
+
+如果你需要根据变量命名约定生成自定义 hook，也可以在 `createHook` 里配置 `alternates`。更完整的字段说明见 `配置说明` 章节。
 
 ## 适用场景
 
@@ -45,47 +87,3 @@ eslint App.tsx --fix
 - 依赖 TypeScript 类型信息时，需要 ESLint 能正确拿到项目类型服务
 - 自动生成的依赖数组与类型提取是启发式行为，复杂场景建议人工复核
 - 更适合批量执行小型 codemod，而不是替代大型 AST 迁移脚本
-
-## 文档开发
-
-仓库使用 `bun` workspaces。请在项目根目录安装依赖：
-
-```bash
-bun install
-```
-
-启动 VitePress 开发服务：
-
-```bash
-bun run docs:dev
-```
-
-构建静态站点：
-
-```bash
-bun run docs:build
-```
-
-本地预览构建产物：
-
-```bash
-bun run docs:preview
-```
-
-构建输出目录为 `docs/.vitepress/dist`。
-
-## GitHub Pages 部署
-
-文档站默认部署在 GitHub Pages 项目站点路径：
-
-```txt
-/eslint-plugin-react-codemod/
-```
-
-对应默认地址：
-
-```txt
-https://ryo98-sl.github.io/eslint-plugin-react-codemod/
-```
-
-如果仓库名或 GitHub 账号变更，需要同步修改 `docs/.vitepress/config.ts`。

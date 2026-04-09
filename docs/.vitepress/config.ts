@@ -18,12 +18,6 @@ function createThemeConfig(isZh: boolean): DefaultTheme.Config {
               { text: "效果示例", link: "/zh/examples" },
             ],
           },
-          {
-            text: "Contribute",
-            items: [
-              { text: "开发配置", link: "/zh/guide/contribute" },
-            ],
-          },
         ]
       : [
           {
@@ -32,12 +26,6 @@ function createThemeConfig(isZh: boolean): DefaultTheme.Config {
               { text: "Getting Started", link: "/guide/getting-started" },
               { text: "Configuration", link: "/guide/configuration" },
               { text: "Examples", link: "/examples" },
-            ],
-          },
-          {
-            text: "Contribute",
-            items: [
-              { text: "Development Setup", link: "/guide/contribute" },
             ],
           },
         ],

@@ -14,6 +14,88 @@ export default [
 
 你可以通过传参分别开启和定制每条规则。
 
+## `alternates`
+
+`alternates` 用来注册可识别的替代实现，让插件知道某个 hook 还有哪些等价或扩展用法。
+
+如果你希望自动修复时优先使用某个 hook 名，需要再配合 `prefer` 明确指定目标 hook。两者通常一起使用：`alternates` 负责注册，`prefer` 负责选择。
+
+### `wrapHook` 中的 `alternates`
+
+下面的配置先通过 `alternates` 注册 `ahooks` 的替代实现，再通过 `prefer` 指定优先生成 `useMemoizedFn` 和 `useCreation`：
+
+```ts
+import reactCodemod from "eslint-plugin-react-codemod";
+
+export default [
+  reactCodemod({
+    wrapHook: [
+      "warn",
+      {
+        useCallback: {
+          prefer: "useMemoizedFn",
+          alternates: [
+            {
+              hookName: "useMemoizedFn",
+              hookModulePath: "ahooks",
+              isDefaultExport: false,
+              withDepList: false,
+            },
+          ],
+        },
+        useMemo: {
+          prefer: "useCreation",
+          alternates: [
+            {
+              hookName: "useCreation",
+              hookModulePath: "ahooks",
+              isDefaultExport: false,
+              withDepList: true,
+            },
+          ],
+        },
+      },
+    ],
+  }),
+];
+```
+
+### `createHook` 中的 `alternates`
+
+你也可以让插件按命名模式生成自定义 hook：
+
+```ts
+import reactCodemod from "eslint-plugin-react-codemod";
+
+export default [
+  reactCodemod({
+    createHook: [
+      "warn",
+      {
+        allowAttributes: ["*"],
+        alternates: [
+          {
+            kind: "reference",
+            hookName: "useComposedRef",
+            hookModulePath: "@radix-ui/react-compose-refs",
+            isDefaultExport: false,
+            matchPattern: "^composedRef$",
+          },
+          {
+            kind: "state",
+            hookName: "useAtom",
+            hookModulePath: "jotai",
+            isDefaultExport: false,
+            matchPattern: "^set(\\w+)",
+            stateVariableNamePattern: "$1",
+          },
+        ],
+      },
+    ],
+  }),
+];
+```
+
 ## `wrapHook`
 
 通过 `wrapHook` 把不稳定的 JSX 值转换成 `useMemo` 或 `useCallback`：
@@ -62,44 +144,6 @@ export default [
 - `checkRegExp`: 是否处理正则字面量，默认 `true`
 - `(useMemo | useCallback).commentOnly`: 只有写了注释时才对对应场景生效，默认 `false`
 
-你也可以接入自定义 hook 别名：
-
-```ts
-import reactCodemod from "eslint-plugin-react-codemod";
-
-export default [
-  reactCodemod({
-    wrapHook: [
-      "warn",
-      {
-        useCallback: {
-          prefer: "useMemoizedFn",
-          alternates: [
-            {
-              hookName: "useMemoizedFn",
-              hookModulePath: "ahooks",
-              isDefaultExport: false,
-              withDepList: false,
-            },
-          ],
-        },
-        useMemo: {
-          prefer: "useCreation",
-          alternates: [
-            {
-              hookName: "useCreation",
-              hookModulePath: "ahooks",
-              isDefaultExport: false,
-              withDepList: true,
-            },
-          ],
-        },
-      },
-    ],
-  }),
-];
-```
-
 ## `createHook`
 
 通过 `createHook` 在 JSX 引用了未声明标识符时生成 `useRef` 或 `useState`：
@@ -132,37 +176,3 @@ export default [
 
 - 命中 `^\w+Ref` 的标识符优先创建 `useRef`
 - 命中 `^set(\w+)` 的标识符优先创建 `useState`
-
-例如可以自定义一组替代规则：
-
-```ts
-import reactCodemod from "eslint-plugin-react-codemod";
-
-export default [
-  reactCodemod({
-    createHook: [
-      "warn",
-      {
-        allowAttributes: ["*"],
-        alternates: [
-          {
-            kind: "reference",
-            hookName: "useComposedRef",
-            hookModulePath: "@radix-ui/react-compose-refs",
-            isDefaultExport: false,
-            matchPattern: "^composedRef$",
-          },
-          {
-            kind: "state",
-            hookName: "useAtom",
-            hookModulePath: "jotai",
-            isDefaultExport: false,
-            matchPattern: "^set(\\w+)",
-            stateVariableNamePattern: "$1",
-          },
-        ],
-      },
-    ],
-  }),
-];
-```

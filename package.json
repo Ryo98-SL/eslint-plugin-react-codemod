@@ -5,7 +5,7 @@
   "author": "Ryo98-SL",
   "license": "MIT",
   "type": "module",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": false,
   "scripts": {
     "test": "vitest run",
@@ -18,7 +18,7 @@
     "docs:build": "bun run --cwd docs docs:build",
     "docs:preview": "bun run --cwd docs docs:preview",
     "prepare": "husky",
-    "prepublishOnly": "npm test"
+    "prepublishOnly": "bun run build && bun run test"
   },
   "files": [
     "dist",
