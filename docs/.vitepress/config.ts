@@ -5,7 +5,7 @@ const repo = "Ryo98-SL/eslint-plugin-react-codemod";
 
 function createThemeConfig(isZh: boolean): DefaultTheme.Config {
   return {
-    logo: `${base}logo.svg`,
+    logo: "logo.svg",
     siteTitle: "ESLint Plugin React Codemod",
     nav: [],
     sidebar: isZh
