@@ -8,7 +8,7 @@ function Demo(props: { label: string }) {
     
     const handleModalClick = useCallback<(Parameters<typeof Modal>[0]["onClick"]) & Function>(() => {
         console.log(props.label);
-    }, [props.label, props]);
+    }, [props.label]);
     return <Modal
         info={{size: 10}}
         onClick={handleModalClick}

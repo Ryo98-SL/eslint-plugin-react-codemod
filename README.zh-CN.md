@@ -2,7 +2,7 @@
 
 [English](https://github.com/Ryo98-SL/eslint-plugin-react-codemod/blob/main/README.md) | 简体中文
 
-一个基于 ESLint 自动修复能力实现的 React codemod 工具。
+一个基于 ESLint 自动修复能力实现的 React codemod 工具。灵感来自于[eslint-plugin-command](https://github.com/antfu/eslint-plugin-command)。
 
 文档站：[ryo98-sl.github.io/eslint-plugin-react-codemod](https://ryo98-sl.github.io/eslint-plugin-react-codemod/)
 

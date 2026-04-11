@@ -21,7 +21,7 @@ function NoInlineLiteralObject(props: { text: string }) {
     const handleModalClick = useCallback<(Parameters<typeof Modal>[0]["onClick"]) & Function>(({ count }) => {
         console.log(props.text);
         console.log("=>(in.tsx:17) count", count);
-    }, [props.text, props]);
+    }, [props.text]);
     return <div style={divStyle}>
         <Box style={boxStyle}></Box>
         <Modal info={ModalInfo}

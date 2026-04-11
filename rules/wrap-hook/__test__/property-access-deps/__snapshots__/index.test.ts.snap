@@ -1,0 +1,21 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`wrap-hook property-access-deps > matches snapshot 1`] = `
+"import {Modal} from "helpers/test-helper/comps/modal";
+import { useState, useCallback } from "react";
+
+function Demo(props: { text: string; title: string }) {
+    const [count, setCount] = useState(0);
+
+    
+    const handleModalClick = useCallback<(Parameters<typeof Modal>[0]["onClick"]) & Function>(({ count: nextCount }) => {
+        console.log(props.text);
+        console.log(props.title);
+        setCount(count + nextCount);
+    }, [props.text, props.title]);
+    return <Modal
+        onClick={handleModalClick}
+    />;
+}
+"
+`;

@@ -68,10 +68,16 @@
   },
   "keywords": [
     "eslint",
-    "eslintplugin",
     "eslint-plugin",
-    "eslint-plugin-react",
-    "react-codemod",
-    "auto-create-hook"
+    "react",
+    "react-hooks",
+    "usecallback",
+    "usememo",
+    "jsx",
+    "refactoring",
+    "autofix",
+    "performance",
+    "inline-function",
+    "code-transformation"
   ]
 }
