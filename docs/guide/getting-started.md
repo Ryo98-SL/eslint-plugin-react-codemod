@@ -20,6 +20,34 @@ export default [
 ];
 ```
 
+If your project already follows common library conventions, you can start with an official preset and compose multiple presets when needed:
+
+```ts
+import reactCodemod from "eslint-plugin-react-codemod";
+
+export default [
+  reactCodemod(
+    reactCodemod.compose(
+      reactCodemod.presets.ahooks(),
+      reactCodemod.presets.radix(),
+    ),
+  ),
+];
+```
+
+`reactCodemod()` is also environment-aware: when `CI=true`, `CI=1`, or `NODE_ENV=production` is detected, it defaults both rules to `off`. If you still want to run codemods in those environments, enable the rules explicitly:
+
+```ts
+import reactCodemod from "eslint-plugin-react-codemod";
+
+export default [
+  reactCodemod({
+    wrapHook: ["warn"],
+    createHook: ["warn"],
+  }),
+];
+```
+
 Then use your editor's ESLint fix suggestions to apply fixes.
 
 Or run:
@@ -31,6 +59,13 @@ eslint Foo.tsx  --fix
 ## Configuration
 
 If you want the plugin to recognize alternative hook implementations already used in your project, start by configuring `alternates`. If you want autofix to prefer a specific hook name, then use `prefer` to select it explicitly.
+
+For common setups, you can skip most manual wiring and begin with an official preset:
+
+- `reactCodemod.presets.ahooks()`
+- `reactCodemod.presets.mui()`
+- `reactCodemod.presets.radix()`
+- `reactCodemod.presets.jotai()`
 
 For example, if your project already uses `ahooks`:
 

@@ -14,6 +14,56 @@ export default [
 
 You can enable and customize each rule through the helper options.
 
+## Presets
+
+The default export also exposes official presets for common React ecosystems:
+
+```ts
+import reactCodemod from "eslint-plugin-react-codemod";
+
+export default [
+  reactCodemod(
+    reactCodemod.compose(
+      reactCodemod.presets.ahooks(),
+      reactCodemod.presets.radix(),
+      {
+        wrapHook: ["warn", { allowAttributes: ["onClick", "sx"] }],
+      },
+    ),
+  ),
+];
+```
+
+Available presets:
+
+- `reactCodemod.presets.ahooks()`: prefers `useMemoizedFn` and `useCreation`
+- `reactCodemod.presets.mui()`: focuses `wrapHook` on common MUI props such as `sx`, `slotProps`, and `componentsProps`
+- `reactCodemod.presets.radix()`: adds `useComposedRef` support for `createHook`
+- `reactCodemod.presets.jotai()`: adds `useAtom` support for `createHook`
+
+`reactCodemod.compose(...)` merges rule levels, arrays such as `alternates` / `allowAttributes`, and nested `useMemo` / `useCallback` configuration so presets and local overrides can be combined safely.
+
+## Environment Defaults
+
+`reactCodemod()` defaults both rules to `off` when it detects a production-like environment:
+
+- `CI=true`
+- `CI=1`
+- `NODE_ENV=production`
+
+This makes the default config safer in CI pipelines and production builds. To opt in manually, pass rule entries explicitly:
+
+```ts
+import reactCodemod from "eslint-plugin-react-codemod";
+
+export default [
+  reactCodemod({
+    wrapHook: ["warn"],
+    createHook: ["warn"],
+  }),
+];
+```
+
 ## `alternates`
 
 Use `alternates` to register recognized alternative implementations, so the plugin knows which equivalent or extended hook forms it can work with.

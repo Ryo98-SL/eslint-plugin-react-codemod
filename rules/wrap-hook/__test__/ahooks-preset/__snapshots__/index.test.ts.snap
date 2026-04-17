@@ -1,0 +1,53 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`wrap-hook ahooks-preset > matches snapshot 1`] = `
+"import { Modal, type ModalInfoType } from "helpers/test-helper/comps/modal";
+import {useState} from "react";
+import { useCreation, useMemoizedFn } from "ahooks";
+
+function Demo() {
+    const [size] = useState(10);
+
+    
+    const modalInfo = useCreation<ModalInfoType | undefined>(buildInfo(size), [size]);
+    
+    const handleModalClick = useMemoizedFn<Parameters<typeof Modal>[0]["onClick"]>(() => console.log(size));
+    return <Modal
+        info={modalInfo}
+        onClick={handleModalClick}
+    />;
+}
+
+function buildInfo(size: number) {
+    return {
+        size,
+    };
+}
+"
+`;
+
+exports[`wrap-hook ahooks-preset matches snapshot 1`] = `
+"import { Modal, type ModalInfoType } from "helpers/test-helper/comps/modal";
+import {useState} from "react";
+import { useCreation, useMemoizedFn } from "ahooks";
+
+function Demo() {
+    const [size] = useState(10);
+
+    
+    const modalInfo = useCreation<ModalInfoType | undefined>(buildInfo(size), [size]);
+    
+    const handleModalClick = useMemoizedFn<Parameters<typeof Modal>[0]["onClick"]>(() => console.log(size));
+    return <Modal
+        info={modalInfo}
+        onClick={handleModalClick}
+    />;
+}
+
+function buildInfo(size: number) {
+    return {
+        size,
+    };
+}
+"
+`;

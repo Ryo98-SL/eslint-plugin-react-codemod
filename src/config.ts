@@ -1,23 +1,29 @@
 import {CreateHookRuleOptions, HookPattern, WrapHookConfig, WrapHookOptions} from "../helpers/types";
 import type {FlatConfig} from "@typescript-eslint/utils/ts-eslint";
 import {BaseConfig} from "./base-config.ts";
+import type {ReactCodemodOptions} from "../presets/index.ts";
 
 type RuleLevel = FlatConfig.RuleLevel;
 
-const createRuleEntry = <T>(option?: [RuleLevel, T]): [RuleLevel] | [RuleLevel, T] => {
-    const level = option?.[0] ?? "warn";
+const isSafeDefaultDisabledEnvironment = () => {
+    return process.env.CI === "true" || process.env.CI === "1" || process.env.NODE_ENV === "production";
+};
 
-    return option?.[1] === undefined
+const getDefaultRuleLevel = (): RuleLevel => {
+    return isSafeDefaultDisabledEnvironment() ? "off" : "warn";
+};
+
+const createRuleEntry = <T>(option?: [RuleLevel, T] | [RuleLevel]): [RuleLevel] | [RuleLevel, T] => {
+    const level = option?.[0] ?? getDefaultRuleLevel();
+
+    return option?.length === 1 || option?.[1] === undefined
         ? [level]
         : [level, option[1]];
 }
 
 
 function reactCodemodConfig<H extends HookPattern = HookPattern>(
-options?: {
-                                wrapHook?: [RuleLevel, WrapHookOptions<H>],
-                                createHook?: [RuleLevel, CreateHookRuleOptions],
-                            }
+options?: ReactCodemodOptions<H>
 ): FlatConfig.Config {
 
     return {
@@ -33,5 +39,7 @@ options?: {
 const defineMemoRuleConfig = <H extends `use${string}`, >
 (config: WrapHookConfig<H>) => config;
 
+const defineConfig = <H extends HookPattern = HookPattern>(config: ReactCodemodOptions<H>) => config;
 
-export { reactCodemodConfig, defineMemoRuleConfig };
+export type {ReactCodemodOptions, ReactCodemodRuleLevel} from "../presets/index.ts";
+export { reactCodemodConfig, defineConfig, defineMemoRuleConfig };

@@ -20,6 +20,34 @@ export default [
 ];
 ```
 
+如果你的项目已经遵循某些常见库的约定，也可以直接从官方 preset 起步，并按需组合多个 preset：
+
+```ts
+import reactCodemod from "eslint-plugin-react-codemod";
+
+export default [
+  reactCodemod(
+    reactCodemod.compose(
+      reactCodemod.presets.ahooks(),
+      reactCodemod.presets.radix(),
+    ),
+  ),
+];
+```
+
+`reactCodemod()` 还会根据环境自动调整默认行为：当检测到 `CI=true`、`CI=1` 或 `NODE_ENV=production` 时，两条 rule 会默认变成 `off`。如果你仍然希望在这些环境里执行 codemod，可以显式开启：
+
+```ts
+import reactCodemod from "eslint-plugin-react-codemod";
+
+export default [
+  reactCodemod({
+    wrapHook: ["warn"],
+    createHook: ["warn"],
+  }),
+];
+```
+
 你可以直接利用编辑器的 ESLint 修复建议来完成代码修改。
 
 或者执行：
@@ -31,6 +59,13 @@ eslint App.tsx --fix
 ## 配置
 
 如果你希望插件识别项目里已经在用的 hook 替代实现，建议先配置 `alternates`；如果希望自动修复时优先使用某个 hook 名，再通过 `prefer` 明确指定。
+
+对于常见技术栈，也可以直接使用官方 preset，减少手动配置：
+
+- `reactCodemod.presets.ahooks()`
+- `reactCodemod.presets.mui()`
+- `reactCodemod.presets.radix()`
+- `reactCodemod.presets.jotai()`
 
 例如项目里已经使用 `ahooks`：
 

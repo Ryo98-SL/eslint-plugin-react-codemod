@@ -30,3 +30,34 @@ const Button: React.FC<{children: ReactNode, onClick: () => void, style: object}
 const ButtonStyle: Parameters<typeof Button>[0]["style"] = { padding: '10px' };
 "
 `;
+
+exports[`wrap-hook early-return matches snapshot 1`] = `
+"import { ReactNode, useState, useCallback } from "react";
+
+
+function EarlyReturn(props: { error: any }) {
+
+    const [count, setCount] = useState(1);
+
+    
+    const handleButtonClick = useCallback<Parameters<typeof Button>[0]["onClick"]>(() => setCount(count + 1), [count]);
+    if(props.error) {
+        return <span>error: {typeof props.error === 'string' ? props.error : 'toString' in props.error ? JSON.stringify(props.error) : 'unknown error'}</span>
+    }
+
+    return <Button
+        
+        onClick={handleButtonClick}
+        style={ButtonStyle}
+    >
+        {count}
+    </Button>
+}
+
+const Button: React.FC<{children: ReactNode, onClick: () => void, style: object}> = (props) => {
+
+    return <button onClick={props.onClick} style={props.style}>{props.children}</button>
+}
+const ButtonStyle: Parameters<typeof Button>[0]["style"] = { padding: '10px' };
+"
+`;

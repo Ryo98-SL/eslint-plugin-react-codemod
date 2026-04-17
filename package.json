@@ -5,7 +5,7 @@
   "author": "Ryo98-SL",
   "license": "MIT",
   "type": "module",
-  "version": "0.1.2",
+  "version": "0.2",
   "private": false,
   "scripts": {
     "test": "vitest run",
@@ -28,6 +28,7 @@
   "workspaces": [
     "docs",
     "helpers",
+    "presets",
     "rules/*"
   ],
   "exports": {

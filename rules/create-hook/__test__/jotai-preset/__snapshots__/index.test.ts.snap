@@ -1,0 +1,23 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`create-hook jotai-preset > matches snapshot 1`] = `
+"import {Dialog} from "helpers/test-helper/comps/dialog.tsx";
+import { useAtom } from "jotai";
+
+const MyFc = () => {
+    const [width, setWidth] = useAtom<Parameters<typeof Dialog>[0]["width"] | null>(null);
+    return <Dialog width={setWidth}/>;
+};
+"
+`;
+
+exports[`create-hook jotai-preset matches snapshot 1`] = `
+"import {Dialog} from "helpers/test-helper/comps/dialog.tsx";
+import { useAtom } from "jotai";
+
+const MyFc = () => {
+    const [width, setWidth] = useAtom<Parameters<typeof Dialog>[0]["width"] | null>(null);
+    return <Dialog width={setWidth}/>;
+};
+"
+`;

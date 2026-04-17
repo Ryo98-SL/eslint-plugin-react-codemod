@@ -33,3 +33,37 @@ function PreferTest() {
 }
 "
 `;
+
+exports[`wrap-hook comment matches snapshot 1`] = `
+"import { Modal, type ModalInfoType } from "helpers/test-helper/comps/modal";
+import {useCallback, useState} from "react";
+import { useMemoProxy, useCallbackProxy } from "react-dummy";
+
+
+function PreferTest() {
+
+    const [size, setSize] = useState(10)
+
+    const innerGenInfo = useCallback((size: number) => {
+        return {
+            size: size + 20
+        }
+    }, []);
+
+    
+    const modalInfo = useMemoProxy<ModalInfoType | undefined>(innerGenInfo(size), [innerGenInfo, size]);
+    
+    const handleModalClick = useCallbackProxy<Parameters<typeof Modal>[0]["onClick"]>(() => console.log(size), [size]);
+    
+    const handleModalClose = useCallbackProxy<Parameters<typeof Modal>[0]["onClose"]>(() => console.log(size), [size]);
+    return <>
+        
+        <Modal 
+            onClick={handleModalClick} 
+            onClose={handleModalClose}
+            info={modalInfo}
+        />
+    </>
+}
+"
+`;

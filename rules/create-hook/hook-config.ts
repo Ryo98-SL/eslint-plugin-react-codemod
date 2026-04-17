@@ -3,6 +3,7 @@ import type {NormalizedHookAlternate} from "./types.ts";
 
 export const createHookAlternates = (options: CreateHookRuleOptions): HookAlternate[] => {
     return [
+        ...(options.alternates || []),
         {
             hookName: "useRef",
             matchPattern: "^\\w+Ref",
@@ -18,7 +19,6 @@ export const createHookAlternates = (options: CreateHookRuleOptions): HookAltern
             kind: "state",
             stateVariableNamePattern: "$1",
         },
-        ...(options.alternates || []),
     ];
 };
 

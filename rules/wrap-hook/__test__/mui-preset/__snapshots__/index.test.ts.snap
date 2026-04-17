@@ -1,25 +1,27 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`wrap-hook mui-specific-sx > matches snapshot 1`] = `
+exports[`wrap-hook mui-preset > matches snapshot 1`] = `
 "import {Box} from "@mui/material";
 import { SxProps, type Theme } from "@mui/material";
 
 function MyComponent() {
 
-    return <Box sx={BoxSx}></Box>
+    return <Box sx={BoxSx}></Box>;
 }
 const BoxSx: SxProps<Theme> | undefined = { width: 1 };
+
 "
 `;
 
-exports[`wrap-hook mui-specific-sx matches snapshot 1`] = `
+exports[`wrap-hook mui-preset matches snapshot 1`] = `
 "import {Box} from "@mui/material";
 import { SxProps, type Theme } from "@mui/material";
 
 function MyComponent() {
 
-    return <Box sx={BoxSx}></Box>
+    return <Box sx={BoxSx}></Box>;
 }
 const BoxSx: SxProps<Theme> | undefined = { width: 1 };
+
 "
 `;

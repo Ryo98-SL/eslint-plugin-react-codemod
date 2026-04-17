@@ -14,6 +14,56 @@ export default [
 
 你可以通过传参分别开启和定制每条规则。
 
+## Presets
+
+默认导出同时提供了一组面向常见 React 技术栈的官方 preset：
+
+```ts
+import reactCodemod from "eslint-plugin-react-codemod";
+
+export default [
+  reactCodemod(
+    reactCodemod.compose(
+      reactCodemod.presets.ahooks(),
+      reactCodemod.presets.radix(),
+      {
+        wrapHook: ["warn", { allowAttributes: ["onClick", "sx"] }],
+      },
+    ),
+  ),
+];
+```
+
+可用 preset：
+
+- `reactCodemod.presets.ahooks()`：优先生成 `useMemoizedFn` 和 `useCreation`
+- `reactCodemod.presets.mui()`：聚焦 `sx`、`slotProps`、`componentsProps` 等常见 MUI prop
+- `reactCodemod.presets.radix()`：为 `createHook` 增加 `useComposedRef` 支持
+- `reactCodemod.presets.jotai()`：为 `createHook` 增加 `useAtom` 支持
+
+`reactCodemod.compose(...)` 会合并 rule level、`alternates` / `allowAttributes` 等数组字段，以及 `useMemo` / `useCallback` 的嵌套配置，方便把 preset 和本地覆写安全组合起来。
+
+## 环境默认行为
+
+当检测到以下生产类环境时，`reactCodemod()` 会把两条 rule 默认设为 `off`：
+
+- `CI=true`
+- `CI=1`
+- `NODE_ENV=production`
+
+这样可以避免在 CI 流水线或生产构建里误执行 codemod。如果你希望手动开启，可以显式传入 rule 配置：
+
+```ts
+import reactCodemod from "eslint-plugin-react-codemod";
+
+export default [
+  reactCodemod({
+    wrapHook: ["warn"],
+    createHook: ["warn"],
+  }),
+];
+```
+
 ## `alternates`
 
 `alternates` 用来注册可识别的替代实现，让插件知道某个 hook 还有哪些等价或扩展用法。

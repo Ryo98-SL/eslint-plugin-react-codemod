@@ -1,0 +1,13 @@
+{
+  "name": "presets",
+  "private": true,
+  "exports": {
+    ".": "./index.ts"
+  },
+  "dependencies": {
+    "helpers": "workspace:*"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

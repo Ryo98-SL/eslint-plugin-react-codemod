@@ -11,6 +11,7 @@ It focuses on repetitive React refactors:
 - Wrap unstable JSX values with `useMemo` or `useCallback`
 - Create missing `useRef` and `useState` declarations from JSX usage
 - Generate related TypeScript types and imports when possible
+- Provide reusable presets for common React libraries such as `ahooks`, `Radix`, `jotai`, and `MUI`
 
 This plugin targets ESLint Flat Config and expects your project to already use `typescript`.
 
@@ -29,6 +30,34 @@ import reactCodemod from "eslint-plugin-react-codemod";
 
 export default [
   reactCodemod(),
+];
+```
+
+Presets can be composed:
+
+```ts
+import reactCodemod from "eslint-plugin-react-codemod";
+
+export default [
+  reactCodemod(
+    reactCodemod.compose(
+      reactCodemod.presets.ahooks(),
+      reactCodemod.presets.radix(),
+    ),
+  ),
+];
+```
+
+By default, `reactCodemod()` disables all rules when `CI=true`, `CI=1`, or `NODE_ENV=production` is detected, so codemods do not run accidentally in production-like environments. You can still enable them explicitly:
+
+```ts
+import reactCodemod from "eslint-plugin-react-codemod";
+
+export default [
+  reactCodemod({
+    wrapHook: ["warn"],
+    createHook: ["warn"],
+  }),
 ];
 ```
 

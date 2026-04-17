@@ -1,0 +1,23 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`create-hook radix-preset > matches snapshot 1`] = `
+"import { Dialog, type DialogAPI } from "helpers/test-helper/comps/dialog.tsx";
+import { useComposedRef } from "@radix-ui/react-compose-refs";
+
+const MyFc = () => {
+    const composedRef = useComposedRef<DialogAPI>(null);
+    return <Dialog ref={composedRef}/>;
+};
+"
+`;
+
+exports[`create-hook radix-preset matches snapshot 1`] = `
+"import { Dialog, type DialogAPI } from "helpers/test-helper/comps/dialog.tsx";
+import { useComposedRef } from "@radix-ui/react-compose-refs";
+
+const MyFc = () => {
+    const composedRef = useComposedRef<DialogAPI>(null);
+    return <Dialog ref={composedRef}/>;
+};
+"
+`;
