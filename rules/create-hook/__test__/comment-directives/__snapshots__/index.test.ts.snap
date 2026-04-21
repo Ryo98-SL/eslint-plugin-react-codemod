@@ -1,0 +1,41 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`create-hook comment-directives > matches snapshot 1`] = `
+"import {Dialog} from "helpers/test-helper/comps/dialog.tsx";
+import { useRef, useState } from "react";
+
+const MyFc = () => {
+    const widthValue = useRef<Parameters<typeof Dialog>[0]["width"]>(null);
+    
+    const [variant, setVariant] = useState(null);
+    return <Dialog 
+    // ignore
+    ref={ignoredRef} 
+    width={widthValue} 
+    
+    variant={setVariant} 
+    // useState
+    height={heightValue}/>;
+};
+"
+`;
+
+exports[`create-hook comment-directives matches snapshot 1`] = `
+"import {Dialog} from "helpers/test-helper/comps/dialog.tsx";
+import { useRef, useState } from "react";
+
+const MyFc = () => {
+    const widthValue = useRef<Parameters<typeof Dialog>[0]["width"]>(null);
+    
+    const [variant, setVariant] = useState(null);
+    return <Dialog 
+    // ignore
+    ref={ignoredRef} 
+    width={widthValue} 
+    
+    variant={setVariant} 
+    // useState
+    height={heightValue}/>;
+};
+"
+`;

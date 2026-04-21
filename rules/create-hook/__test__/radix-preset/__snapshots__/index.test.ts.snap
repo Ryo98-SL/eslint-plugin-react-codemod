@@ -5,8 +5,9 @@ exports[`create-hook radix-preset > matches snapshot 1`] = `
 import { useComposedRef } from "@radix-ui/react-compose-refs";
 
 const MyFc = () => {
-    const composedRef = useComposedRef<DialogAPI>(null);
-    return <Dialog ref={composedRef}/>;
+    const customRef = useComposedRef<DialogAPI>(null);
+    return <Dialog 
+    ref={customRef}/>;
 };
 "
 `;
@@ -16,8 +17,9 @@ exports[`create-hook radix-preset matches snapshot 1`] = `
 import { useComposedRef } from "@radix-ui/react-compose-refs";
 
 const MyFc = () => {
-    const composedRef = useComposedRef<DialogAPI>(null);
-    return <Dialog ref={composedRef}/>;
+    const customRef = useComposedRef<DialogAPI>(null);
+    return <Dialog 
+    ref={customRef}/>;
 };
 "
 `;

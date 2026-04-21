@@ -50,6 +50,7 @@ export interface WrapHookOptions<H extends HookPattern = HookPattern> {
     typeDefinitions?: boolean;
     allowAttributes?: (string | RegExpConfig)[];
     ignoredComponents?: (string | RegExpConfig)[];
+    commentDirectives?: CommentDirectiveOptions;
     declarationsPosition?: 'start' | 'end';
     checkFunction?: boolean;
     checkArray?: boolean;
@@ -63,8 +64,13 @@ export interface WrapHookOptions<H extends HookPattern = HookPattern> {
 export interface CreateHookRuleOptions {
     allowAttributes?: (string | RegExpConfig)[];
     ignoredComponents?: (string | RegExpConfig)[];
+    commentDirectives?: CommentDirectiveOptions;
     alternates?: HookAlternate[],
     typeDefinitions?: boolean
+}
+
+export interface CommentDirectiveOptions {
+    prefix?: string;
 }
 
 export type HookPattern = `use${string}`;

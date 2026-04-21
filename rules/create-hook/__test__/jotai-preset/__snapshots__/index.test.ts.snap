@@ -6,7 +6,8 @@ import { useAtom } from "jotai";
 
 const MyFc = () => {
     const [width, setWidth] = useAtom<Parameters<typeof Dialog>[0]["width"] | null>(null);
-    return <Dialog width={setWidth}/>;
+    return <Dialog 
+    width={setWidth}/>;
 };
 "
 `;
@@ -17,7 +18,8 @@ import { useAtom } from "jotai";
 
 const MyFc = () => {
     const [width, setWidth] = useAtom<Parameters<typeof Dialog>[0]["width"] | null>(null);
-    return <Dialog width={setWidth}/>;
+    return <Dialog 
+    width={setWidth}/>;
 };
 "
 `;

@@ -88,7 +88,7 @@ const Demo = () => {
 
 ## 注释触发模式
 
-`wrap-hook` 支持用紧邻属性上方的注释，显式指定要使用的 hook。
+两条 rule 都支持在 JSX prop 上方通过注释控制行为。
 
 ```tsx
 <Modal
@@ -106,3 +106,41 @@ const Demo = () => {
 - 触发注释会在修复后被移除
 
 如果你只想在写了注释时才触发，可以把对应规则配置成 `commentOnly: true`。
+
+使用 `// ignore` 可以跳过某个 prop：
+
+```tsx
+<Modal
+  // ignore
+  onClose={() => console.log(size)}
+/>
+```
+
+`create-hook` 也可以通过注释显式指定 hook：
+
+```tsx
+<Dialog
+  // useRef
+  ref={dialogRef}
+  // useState
+  width={setWidth}
+/>
+```
+
+如果团队希望使用项目级命名空间，可以配置 `commentDirectives.prefix`，然后使用 `prefix:command` 注释。短命令仍然会兼容。
+
+```ts
+reactCodemod({
+  wrapHook: ["warn", { commentDirectives: { prefix: "react-codemod" } }],
+  createHook: ["warn", { commentDirectives: { prefix: "react-codemod" } }],
+});
+```
+
+```tsx
+<Modal
+  // react-codemod:ignore
+  onClose={() => console.log(size)}
+  // react-codemod:useMemo
+  info={buildInfo(size)}
+/>
+```

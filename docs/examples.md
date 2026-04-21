@@ -96,7 +96,7 @@ const Demo = () => {
 
 ## Comment-Driven Mode
 
-`wrap-hook` supports command-style comments directly above a prop to explicitly choose the hook to apply.
+Both rules support command-style comments directly above a prop.
 
 ```tsx
 <Modal
@@ -114,3 +114,41 @@ After fixing:
 - the trigger comments are removed automatically
 
 If you only want transformations to run when a comment is present, set `commentOnly: true`.
+
+Use `// ignore` to skip one prop:
+
+```tsx
+<Modal
+  // ignore
+  onClose={() => console.log(size)}
+/>
+```
+
+`create-hook` can also be guided with hook comments:
+
+```tsx
+<Dialog
+  // useRef
+  ref={dialogRef}
+  // useState
+  width={setWidth}
+/>
+```
+
+For teams that want a project-specific namespace, configure `commentDirectives.prefix` and use `prefix:command` comments. Short commands remain supported.
+
+```ts
+reactCodemod({
+  wrapHook: ["warn", { commentDirectives: { prefix: "react-codemod" } }],
+  createHook: ["warn", { commentDirectives: { prefix: "react-codemod" } }],
+});
+```
+
+```tsx
+<Modal
+  // react-codemod:ignore
+  onClose={() => console.log(size)}
+  // react-codemod:useMemo
+  info={buildInfo(size)}
+/>
+```

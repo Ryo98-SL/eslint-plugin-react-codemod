@@ -1,3 +1,8 @@
 import {Dialog} from "helpers/test-helper/comps/dialog.tsx";
 
-const MyFc = () => <Dialog width={setWidth} />;
+const MyFc = () => (
+    <Dialog
+        // useAtom
+        width={setWidth}
+    />
+);

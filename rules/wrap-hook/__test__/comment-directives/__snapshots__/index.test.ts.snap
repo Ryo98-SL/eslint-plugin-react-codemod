@@ -1,0 +1,61 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`wrap-hook comment-directives > matches snapshot 1`] = `
+"import { Modal, type ModalInfoType } from "helpers/test-helper/comps/modal";
+import {useCallback, useState} from "react";
+import { useCreation, useMemoizedFn } from "ahooks";
+
+function CommentDirectiveTest() {
+    const [size] = useState(10);
+
+    const innerGenInfo = useCallback((size: number) => {
+        return {
+            size: size + 20,
+        };
+    }, []);
+
+    
+    const modalInfo = useCreation<ModalInfoType | undefined>(innerGenInfo(size), [innerGenInfo, size]);
+    
+    const handleModalClick = useMemoizedFn<Parameters<typeof Modal>[0]["onClick"]>(() => console.log(size));
+    return <Modal
+        
+        onClick={handleModalClick}
+        // ignore
+        onClose={() => console.log(size)}
+        
+        info={modalInfo}
+    />;
+}
+"
+`;
+
+exports[`wrap-hook comment-directives matches snapshot 1`] = `
+"import { Modal, type ModalInfoType } from "helpers/test-helper/comps/modal";
+import {useCallback, useState} from "react";
+import { useCreation, useMemoizedFn } from "ahooks";
+
+function CommentDirectiveTest() {
+    const [size] = useState(10);
+
+    const innerGenInfo = useCallback((size: number) => {
+        return {
+            size: size + 20,
+        };
+    }, []);
+
+    
+    const modalInfo = useCreation<ModalInfoType | undefined>(innerGenInfo(size), [innerGenInfo, size]);
+    
+    const handleModalClick = useMemoizedFn<Parameters<typeof Modal>[0]["onClick"]>(() => console.log(size));
+    return <Modal
+        
+        onClick={handleModalClick}
+        // ignore
+        onClose={() => console.log(size)}
+        
+        info={modalInfo}
+    />;
+}
+"
+`;

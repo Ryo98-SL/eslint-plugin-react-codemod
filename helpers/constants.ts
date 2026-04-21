@@ -6,7 +6,7 @@ export const HOOK_CONFIG_SHAPE: Record<string, JSONSchema4> = {
         "prefer": {
             type: "string",
         },
-        "activateWithComment": {
+        "commentOnly": {
             type: "boolean",
         },
         "alternates": {

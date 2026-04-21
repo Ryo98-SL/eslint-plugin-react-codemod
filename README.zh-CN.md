@@ -12,6 +12,7 @@
 - 根据 JSX 使用场景自动创建 `useRef` 和 `useState`
 - 在可推断时补充相关 TypeScript 类型和 import
 - 为 `ahooks`、`Radix`、`jotai`、`MUI` 等常见 React 技术栈提供可复用 preset
+- 支持通过 `// useMemo`、`// useRef`、`// ignore` 等邻近注释控制 codemod
 
 这个插件面向 ESLint Flat Config，并假设你的项目已经使用 `typescript`。
 
@@ -46,6 +47,17 @@ export default [
     ),
   ),
 ];
+```
+
+你也可以通过注释指令强制或跳过某个 JSX prop：
+
+```tsx
+<Modal
+  // ignore
+  onClose={() => console.log(size)}
+  // useCallback
+  onClick={() => console.log(size)}
+/>
 ```
 
 默认情况下，当检测到 `CI=true`、`CI=1` 或 `NODE_ENV=production` 时，`reactCodemod()` 会关闭所有 rule，避免在生产类环境中误执行 codemod。你仍然可以显式手动开启：

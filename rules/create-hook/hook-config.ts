@@ -49,6 +49,20 @@ export const findMatchingHookAlternate = (
     return normalizedHooks[0]!;
 };
 
+export const findHookAlternateByName = (
+    hookName: string,
+    normalizedHooks: NormalizedHookAlternate[],
+) => {
+    return normalizedHooks.find((alternate) => alternate.hookName === hookName);
+};
+
+export const canUseHookAlternateForIdentifier = (
+    identifierName: string,
+    hook: NormalizedHookAlternate,
+) => {
+    return hook.kind !== "state" || hook.identifierReg.test(identifierName);
+};
+
 export const createStateVariableName = (
     identifierName: string,
     hook: NormalizedHookAlternate,

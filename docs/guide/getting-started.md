@@ -56,6 +56,19 @@ Or run:
 eslint Foo.tsx  --fix
 ```
 
+When you want to control a single prop, place a directive comment directly above it:
+
+```tsx
+<Modal
+  // ignore
+  onClose={() => console.log(size)}
+  // useCallback
+  onClick={() => console.log(size)}
+/>
+```
+
+If your team wants namespaced comments, configure `commentDirectives.prefix` and use comments like `// react-codemod:useMemo`.
+
 ## Configuration
 
 If you want the plugin to recognize alternative hook implementations already used in your project, start by configuring `alternates`. If you want autofix to prefer a specific hook name, then use `prefer` to select it explicitly.

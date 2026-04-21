@@ -56,6 +56,19 @@ export default [
 eslint App.tsx --fix
 ```
 
+如果你希望控制单个 prop，可以把指令注释放在该 prop 正上方：
+
+```tsx
+<Modal
+  // ignore
+  onClose={() => console.log(size)}
+  // useCallback
+  onClick={() => console.log(size)}
+/>
+```
+
+如果团队希望使用命名空间，可以配置 `commentDirectives.prefix`，然后写 `// react-codemod:useMemo` 这类注释。
+
 ## 配置
 
 如果你希望插件识别项目里已经在用的 hook 替代实现，建议先配置 `alternates`；如果希望自动修复时优先使用某个 hook 名，再通过 `prefer` 明确指定。

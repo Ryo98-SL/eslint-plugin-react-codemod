@@ -43,6 +43,22 @@ export default [
 
 `reactCodemod.compose(...)` 会合并 rule level、`alternates` / `allowAttributes` 等数组字段，以及 `useMemo` / `useCallback` 的嵌套配置，方便把 preset 和本地覆写安全组合起来。
 
+常见技术栈模板：
+
+```ts
+// React + ahooks
+reactCodemod(reactCodemod.presets.ahooks());
+
+// React + MUI
+reactCodemod(reactCodemod.presets.mui());
+
+// React + Radix
+reactCodemod(reactCodemod.presets.radix());
+
+// React + jotai
+reactCodemod(reactCodemod.presets.jotai());
+```
+
 ## 环境默认行为
 
 当检测到以下生产类环境时，`reactCodemod()` 会把两条 rule 默认设为 `off`：
@@ -62,6 +78,54 @@ export default [
     createHook: ["warn"],
   }),
 ];
+```
+
+## 注释指令
+
+在 JSX prop 上方写注释，可以强制选择 hook 或跳过该 prop。默认支持短命令：
+
+```tsx
+<Modal
+  // ignore
+  onClose={() => console.log(size)}
+  // useCallback
+  onClick={() => console.log(size)}
+  // useMemo
+  info={buildInfo(size)}
+/>
+```
+
+`createHook` 会识别 `useRef`、`useState`，以及 custom/preset `alternates`，例如 `useComposedRef` 和 `useAtom`：
+
+```tsx
+<Dialog
+  // useRef
+  ref={dialogRef}
+  // useState
+  width={setWidth}
+/>
+```
+
+你也可以增加团队命名空间。配置 prefix 后，短命令仍然兼容：
+
+```ts
+import reactCodemod from "eslint-plugin-react-codemod";
+
+export default [
+  reactCodemod({
+    wrapHook: ["warn", { commentDirectives: { prefix: "react-codemod" } }],
+    createHook: ["warn", { commentDirectives: { prefix: "react-codemod" } }],
+  }),
+];
+```
+
+```tsx
+<Modal
+  // react-codemod:ignore
+  onClose={() => console.log(size)}
+  // react-codemod:useMemo
+  info={buildInfo(size)}
+/>
 ```
 
 ## `alternates`
@@ -160,6 +224,7 @@ export default [
       {
         typeDefinitions: true,
         allowAttributes: ["onClick", { pattern: "^(info|sx)$" }],
+        commentDirectives: { prefix: "react-codemod" },
         declarationsPosition: "end",
         checkFunction: true,
         checkArray: true,
@@ -185,6 +250,7 @@ export default [
 
 - `typeDefinitions`: 是否尝试补充泛型类型与类型 import，默认 `true`
 - `allowAttributes`: 允许检查的属性名，支持字符串和正则配置，默认 `["*"]`
+- `commentDirectives.prefix`: 额外识别 `// react-codemod:useMemo` 或 `// react-codemod:ignore` 这类注释
 - `declarationsPosition`: 顶层常量插入在文件 `start` 或 `end`，默认 `end`
 - `ignoredComponents`: 忽略某些组件名，支持字符串和正则配置
 - `checkFunction`: 是否处理内联函数，默认 `true`
@@ -207,6 +273,7 @@ export default [
       "warn",
       {
         allowAttributes: ["ref", { pattern: "^on[A-Z]" }, "width", "variant"],
+        commentDirectives: { prefix: "react-codemod" },
         ignoredComponents: [{ pattern: "^(Pure|[a-z])" }],
         typeDefinitions: true,
       },
@@ -218,6 +285,7 @@ export default [
 常用字段：
 
 - `allowAttributes`: 允许自动创建 hook 的属性名，支持字符串和正则配置，默认 `["ref"]`
+- `commentDirectives.prefix`: 额外识别 `// react-codemod:useRef` 或 `// react-codemod:ignore` 这类注释
 - `ignoredComponents`: 忽略某些组件名，支持字符串和正则配置
 - `typeDefinitions`: 是否尝试补类型，默认 `true`
 - `alternates`: 自定义 hook 匹配规则

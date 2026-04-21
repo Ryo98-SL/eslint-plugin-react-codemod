@@ -196,3 +196,4 @@ export * from './resolve-helper/resolve-imports.ts';
 export * from './resolve-helper/resolve-type.ts';
 export {createRule} from "./create-rule.ts";
 export * from './default-options.ts';
+export * from './comment-directives.ts';

@@ -1,3 +1,8 @@
 import {Dialog} from "helpers/test-helper/comps/dialog.tsx";
 
-const MyFc = () => <Dialog ref={composedRef} />;
+const MyFc = () => (
+    <Dialog
+        // useComposedRef
+        ref={customRef}
+    />
+);

@@ -166,4 +166,33 @@ describe("reactCodemod presets", () => {
             },
         ]);
     });
+
+    test("preserves comment directive prefix when composing presets", () => {
+        const options = compose(
+            presets.ahooks(),
+            {
+                wrapHook: ["warn", {
+                    commentDirectives: {
+                        prefix: "react-codemod",
+                    },
+                }],
+                createHook: ["warn", {
+                    commentDirectives: {
+                        prefix: "react-codemod",
+                    },
+                }],
+            },
+        );
+
+        expect(options.wrapHook?.[1]).toEqual(expect.objectContaining({
+            commentDirectives: {
+                prefix: "react-codemod",
+            },
+        }));
+        expect(options.createHook?.[1]).toEqual(expect.objectContaining({
+            commentDirectives: {
+                prefix: "react-codemod",
+            },
+        }));
+    });
 });

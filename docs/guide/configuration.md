@@ -43,6 +43,22 @@ Available presets:
 
 `reactCodemod.compose(...)` merges rule levels, arrays such as `alternates` / `allowAttributes`, and nested `useMemo` / `useCallback` configuration so presets and local overrides can be combined safely.
 
+Copyable stack templates:
+
+```ts
+// React + ahooks
+reactCodemod(reactCodemod.presets.ahooks());
+
+// React + MUI
+reactCodemod(reactCodemod.presets.mui());
+
+// React + Radix
+reactCodemod(reactCodemod.presets.radix());
+
+// React + jotai
+reactCodemod(reactCodemod.presets.jotai());
+```
+
 ## Environment Defaults
 
 `reactCodemod()` defaults both rules to `off` when it detects a production-like environment:
@@ -62,6 +78,54 @@ export default [
     createHook: ["warn"],
   }),
 ];
+```
+
+## Comment Directives
+
+Use comments directly above a JSX prop to force a hook or skip that prop. Short commands are enabled by default:
+
+```tsx
+<Modal
+  // ignore
+  onClose={() => console.log(size)}
+  // useCallback
+  onClick={() => console.log(size)}
+  // useMemo
+  info={buildInfo(size)}
+/>
+```
+
+`createHook` recognizes `useRef`, `useState`, and custom or preset `alternates` such as `useComposedRef` and `useAtom`:
+
+```tsx
+<Dialog
+  // useRef
+  ref={dialogRef}
+  // useState
+  width={setWidth}
+/>
+```
+
+You can also add a team namespace. Short commands still work when a prefix is configured:
+
+```ts
+import reactCodemod from "eslint-plugin-react-codemod";
+
+export default [
+  reactCodemod({
+    wrapHook: ["warn", { commentDirectives: { prefix: "react-codemod" } }],
+    createHook: ["warn", { commentDirectives: { prefix: "react-codemod" } }],
+  }),
+];
+```
+
+```tsx
+<Modal
+  // react-codemod:ignore
+  onClose={() => console.log(size)}
+  // react-codemod:useMemo
+  info={buildInfo(size)}
+/>
 ```
 
 ## `alternates`
@@ -160,6 +224,7 @@ export default [
       {
         typeDefinitions: true,
         allowAttributes: ["onClick", { pattern: "^(info|sx)$" }],
+        commentDirectives: { prefix: "react-codemod" },
         declarationsPosition: "end",
         checkFunction: true,
         checkArray: true,
@@ -185,6 +250,7 @@ Common fields:
 
 - `typeDefinitions`: tries to add generic types and type imports, default `true`
 - `allowAttributes`: limits which prop names are checked, supports strings and regex configs, default `["*"]`
+- `commentDirectives.prefix`: also accepts comments such as `// react-codemod:useMemo` or `// react-codemod:ignore`
 - `declarationsPosition`: inserts hoisted top-level constants at `start` or `end`, default `end`
 - `ignoredComponents`: ignores specific component names, supports strings and regex configs
 - `checkFunction`: handles inline functions, default `true`
@@ -207,6 +273,7 @@ export default [
       "warn",
       {
         allowAttributes: ["ref", { pattern: "^on[A-Z]" }, "width", "variant"],
+        commentDirectives: { prefix: "react-codemod" },
         ignoredComponents: [{ pattern: "^(Pure|[a-z])" }],
         typeDefinitions: true,
       },
@@ -218,6 +285,7 @@ export default [
 Common fields:
 
 - `allowAttributes`: which prop names are allowed to auto-create hooks, supports strings and regex configs, default `["ref"]`
+- `commentDirectives.prefix`: also accepts comments such as `// react-codemod:useRef` or `// react-codemod:ignore`
 - `ignoredComponents`: ignores specific component names, supports strings and regex configs
 - `typeDefinitions`: tries to generate types, default `true`
 - `alternates`: custom hook matching rules

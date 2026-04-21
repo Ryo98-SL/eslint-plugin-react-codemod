@@ -18,6 +18,7 @@ import {
     injectWithImport,
     matchWithExactOrRegex,
     mergeImportUpdateResults,
+    parseAdjacentCommentDirective,
     processMatchConfig,
     transformFunctionWithNonBlockStatement,
     type FixScene,
@@ -117,6 +118,15 @@ export const wrapHook = createRule({
                                 },
                             ],
                         },
+                    },
+                    commentDirectives: {
+                        type: "object",
+                        properties: {
+                            prefix: {
+                                type: "string",
+                            },
+                        },
+                        additionalProperties: false,
                     },
                     useCallback: {
                         type: "object",
@@ -225,16 +235,24 @@ export const wrapHook = createRule({
 
                 const comments = sourceCode.getCommentsBefore(node);
                 const closestComment = comments[comments.length - 1];
-                if (closestComment && closestComment.loc.start.line + 1 === node.loc.start.line) {
+                if (closestComment && closestComment.loc.end.line + 1 === node.loc.start.line) {
                     targetCommentNode = closestComment;
+                }
 
-                    for (const normalized of hookAlternates) {
-                        if (!closestComment.value.match(normalized.regExp)) continue;
+                const commentDirective = parseAdjacentCommentDirective({
+                    sourceCode,
+                    node,
+                    hookCandidates: hookAlternates,
+                    directives: options.commentDirectives,
+                });
+                if (commentDirective?.kind === "ignore") {
+                    return;
+                }
 
-                        matchedCommandComment = true;
-                        hook = normalized;
-                        break;
-                    }
+                if (commentDirective?.kind === "hook") {
+                    targetCommentNode = commentDirective.comment;
+                    matchedCommandComment = true;
+                    hook = commentDirective.hook;
                 }
 
                 if (!matchedCommandComment) {

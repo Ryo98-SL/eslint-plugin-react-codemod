@@ -13,6 +13,7 @@ import {
     injectWithImport,
     matchWithExactOrRegex,
     mergeImportUpdateResults,
+    parseAdjacentCommentDirective,
     processMatchConfig,
     transformFunctionWithNonBlockStatement,
 } from "helpers";
@@ -22,8 +23,31 @@ import type {ImportUpdateResult} from "helpers/types";
 import path from "path";
 import ts, {EmitHint} from "typescript";
 import {TSESTree} from "@typescript-eslint/typescript-estree";
-import {createHookAlternates, createStateVariableName, findMatchingHookAlternate, normalizeHookAlternates} from "./hook-config.ts";
+import {
+    canUseHookAlternateForIdentifier,
+    createHookAlternates,
+    createStateVariableName,
+    findHookAlternateByName,
+    findMatchingHookAlternate,
+    normalizeHookAlternates,
+} from "./hook-config.ts";
 import {inferCreateHookType} from "./type-inference.ts";
+
+const removePrintedCommentLine = (text: string, comment: TSESTree.Comment) => {
+    const targetCommentValue = comment.value.trim();
+
+    return text
+        .split("\n")
+        .filter((line) => {
+            const lineCommentIndex = line.indexOf("//");
+            if (lineCommentIndex === -1) {
+                return true;
+            }
+
+            return line.slice(lineCommentIndex + 2).trim() !== targetCommentValue;
+        })
+        .join("\n");
+};
 
 export const createHook = createRule({
     name: "auto-create-hook",
@@ -79,6 +103,15 @@ export const createHook = createRule({
                             },
                         ],
                     },
+                },
+                commentDirectives: {
+                    type: "object",
+                    properties: {
+                        prefix: {
+                            type: "string",
+                        },
+                    },
+                    additionalProperties: false,
                 },
                 alternates: {
                     type: "array",
@@ -176,17 +209,22 @@ export const createHook = createRule({
                     return;
                 }
 
-                if (expression.type !== AST_NODE_TYPES.Identifier) {
-                    const commentsInside = sourceCode.getCommentsInside(expression);
-                    commentsInside.filter((comment) => {
-                        return normalizedHooks.some((hook) => hook.commandReg.test(comment.value));
-                    });
-
+                const componentName = getComponentName(node.parent);
+                if (matchWithExactOrRegex(componentName, ignoreExactSet, ignoreRegexpList)) {
                     return;
                 }
 
-                const componentName = getComponentName(node.parent);
-                if (matchWithExactOrRegex(componentName, ignoreExactSet, ignoreRegexpList)) {
+                const commentDirective = parseAdjacentCommentDirective({
+                    sourceCode,
+                    node,
+                    hookCandidates: normalizedHooks,
+                    directives: options.commentDirectives,
+                });
+                if (commentDirective?.kind === "ignore") {
+                    return;
+                }
+
+                if (expression.type !== AST_NODE_TYPES.Identifier) {
                     return;
                 }
 
@@ -207,7 +245,14 @@ export const createHook = createRule({
                     }
                 };
 
-                const hook = findMatchingHookAlternate(expression.name, normalizedHooks);
+                const hookDirectiveHook = commentDirective?.kind === "hook"
+                    ? findHookAlternateByName(commentDirective.hook.hookName, normalizedHooks)
+                    : undefined;
+                if (hookDirectiveHook && !canUseHookAlternateForIdentifier(expression.name, hookDirectiveHook)) {
+                    return;
+                }
+
+                const hook = hookDirectiveHook ?? findMatchingHookAlternate(expression.name, normalizedHooks);
                 const {
                     importUpdates,
                     inferredType,
@@ -255,6 +300,10 @@ export const createHook = createRule({
                         injectWithImport(fixer, fixes, tsService, printer, importUpdateResults, sourceFile);
 
                         if (functionComponentNode.body.type === AST_NODE_TYPES.BlockStatement) {
+                            if (commentDirective?.kind === "hook") {
+                                fixes.push(fixer.remove(commentDirective.comment));
+                            }
+
                             const {
                                 insertPosition,
                                 indent,
@@ -274,9 +323,13 @@ export const createHook = createRule({
                                 tsService,
                                 variableStatement,
                             );
+                            let replacementText = printer.printNode(EmitHint.Expression, arrowFunction, sourceFile!);
+                            if (commentDirective?.kind === "hook") {
+                                replacementText = removePrintedCommentLine(replacementText, commentDirective.comment);
+                            }
 
                             fixes.push(
-                                fixer.replaceText(functionComponentNode, printer.printNode(EmitHint.Expression, arrowFunction, sourceFile!)),
+                                fixer.replaceText(functionComponentNode, replacementText),
                             );
                         }
 

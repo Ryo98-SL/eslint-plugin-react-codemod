@@ -12,6 +12,7 @@ It focuses on repetitive React refactors:
 - Create missing `useRef` and `useState` declarations from JSX usage
 - Generate related TypeScript types and imports when possible
 - Provide reusable presets for common React libraries such as `ahooks`, `Radix`, `jotai`, and `MUI`
+- Control codemods with nearby comments such as `// useMemo`, `// useRef`, or `// ignore`
 
 This plugin targets ESLint Flat Config and expects your project to already use `typescript`.
 
@@ -46,6 +47,17 @@ export default [
     ),
   ),
 ];
+```
+
+Comment directives can be used to force or skip individual JSX props:
+
+```tsx
+<Modal
+  // ignore
+  onClose={() => console.log(size)}
+  // useCallback
+  onClick={() => console.log(size)}
+/>
 ```
 
 By default, `reactCodemod()` disables all rules when `CI=true`, `CI=1`, or `NODE_ENV=production` is detected, so codemods do not run accidentally in production-like environments. You can still enable them explicitly:
