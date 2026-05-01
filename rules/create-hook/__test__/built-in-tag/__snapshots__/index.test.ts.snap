@@ -1,0 +1,10 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`create-hook built-in-tag > matches snapshot 1`] = `
+"import { useRef } from "react";
+const App = () => {
+    
+    const buttonRef = useRef<HTMLButtonElement>(null);
+    return <button ref={buttonRef}>Click me</button>
+}"
+`;

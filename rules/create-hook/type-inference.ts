@@ -110,8 +110,11 @@ export const inferCreateHookType = ({
         {resolveToRelativePath: true},
     );
 
+    // `ref` already extracts the inner target type (`T` in `Ref<T>`), so
+    // keeping that inferred type gives better results for intrinsic elements
+    // such as `<button ref={buttonRef} />` -> `useRef<HTMLButtonElement>(null)`.
     const typeHasImported = importScene !== "imported";
-    if (!importUpdates.length && typeHasImported && shouldAddTypes) {
+    if (attrName !== "ref" && !importUpdates.length && typeHasImported && shouldAddTypes) {
         inferredType = getExtractType(componentName, attrName, inferredType, hook.hookName, resolvedTypeInfo, tsService, tsChecker);
     }
 
