@@ -6,6 +6,10 @@ A React codemod tool built on top of ESLint autofix. Inspired by [eslint-plugin-
 
 Docs: [ryo98-sl.github.io/eslint-plugin-react-codemod](https://ryo98-sl.github.io/eslint-plugin-react-codemod/)
 
+## Demo
+
+![eslint-plugin-react-codemod demo](demos/eprc-demo.gif)
+
 It focuses on repetitive React refactors:
 
 - Wrap unstable JSX values with `useMemo` or `useCallback`

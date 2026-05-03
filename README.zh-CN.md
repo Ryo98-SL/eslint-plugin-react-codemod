@@ -6,6 +6,10 @@
 
 文档站：[ryo98-sl.github.io/eslint-plugin-react-codemod](https://ryo98-sl.github.io/eslint-plugin-react-codemod/)
 
+## 效果演示
+
+![eslint-plugin-react-codemod 效果演示](demos/eprc-demo.gif)
+
 它专注解决几类重复性的 React 重构：
 
 - 把不稳定的 JSX 值包装成 `useMemo` 或 `useCallback`

@@ -28,6 +28,10 @@ features:
     link: /zh/examples
 ---
 
+## 效果演示
+
+![eslint-plugin-react-codemod 效果演示](/demos/eprc-demo.gif)
+
 ## 示例
 
 ### 包装 JSX 内联值

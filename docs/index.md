@@ -28,6 +28,10 @@ features:
     link: /examples
 ---
 
+## Demo
+
+![eslint-plugin-react-codemod demo](/demos/eprc-demo.gif)
+
 ## Examples
 
 ### Wrap inline JSX values
